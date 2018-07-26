@@ -1,0 +1,68 @@
+{
+    "performanceSignature": [
+        {
+            "validate": "upper", 
+            "result_compare": 0, 
+            "violation": 0, 
+            "timeseries": "com.dynatrace.builtin:service.responsetime", 
+            "threshold": 0.0, 
+            "aggregate": "avg", 
+            "result": 0
+        }, 
+        {
+            "result": 0, 
+            "threshold": 0.0, 
+            "result_compare": 0, 
+            "aggregate": "p90", 
+            "violation": 0, 
+            "timeseries": "com.dynatrace.builtin:service.responsetime"
+        }, 
+        {
+            "result": 0, 
+            "threshold": 0.0, 
+            "result_compare": 0, 
+            "aggregate": "avg", 
+            "violation": 0, 
+            "timeseries": "com.dynatrace.builtin:service.failurerate"
+        }, 
+        {
+            "result": 0, 
+            "validate": "lower", 
+            "result_compare": 0, 
+            "aggregate": "count", 
+            "violation": 0, 
+            "timeseries": "com.dynatrace.builtin:service.requestspermin", 
+            "threshold": 0.0
+        }, 
+        {
+            "result": 0, 
+            "validate": "lower", 
+            "result_compare": 0, 
+            "aggregate": "count", 
+            "upperlimit": "2", 
+            "smartscape": "toRelationships:calls", 
+            "threshold": 2.0
+        }, 
+        {
+            "result": 1, 
+            "validate": "lower", 
+            "result_compare": 1, 
+            "aggregate": "count", 
+            "violation": 0, 
+            "smartscape": "fromRelationships:runsOn", 
+            "threshold": 0.7
+        }, 
+        {
+            "result": 1, 
+            "validate": "lower", 
+            "result_compare": 1, 
+            "aggregate": "count", 
+            "violation": 0, 
+            "smartscape": "fromRelationships:calls", 
+            "threshold": 0.7
+        }
+    ], 
+        
+    "totalViolations": 0, 
+    "comment": "Pulled compare for 5"
+}
