@@ -1,0 +1,133 @@
+{
+  "id": "bf193850-9137-11e8-be30-db4e5bcd7ef2",
+  "name": "DynatracePushDeploymentEvent",
+  "friendlyName": "Dynatrace Push Deployment Event",
+  "description": "This build and release task sends a deployment event to Dynatrace",
+  "author": "Abel Wang",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "44"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Dynatrace Push Deployment",
+  "inputs": [
+    {
+      "name": "dtToken",
+      "type": "string",
+      "label": "Dynatrace tenant token",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Token to your Dynatrace tenant"
+    },
+    {
+      "name": "dtTenantUrl",
+      "type": "string",
+      "label": "Dynatrace tenant URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "URL to your Dynatrace tenant"
+    },
+    {
+      "name": "entityType",
+      "type": "string",
+      "label": "Entity Type",
+      "defaultValue": "SERVICE",
+      "required": true,
+      "helpMarkDown": "The entity type of the app being monitored"
+    },
+    {
+      "name": "tagContext",
+      "type": "string",
+      "label": "Tag Context",
+      "defaultValue": "CONTEXTLESS",
+      "required": true,
+      "helpMarkDown": "The tag context"
+    },
+    {
+      "name": "tagName",
+      "type": "string",
+      "label": "Tag Name",
+      "defaultValue": "DeploymentGroup",
+      "required": true,
+      "helpMarkDown": "The tag name"
+    },
+    {
+      "name": "tagValue",
+      "type": "string",
+      "label": "Tag Value",
+      "defaultValue": "$(Release.EnvironmentName)",
+      "required": true,
+      "helpMarkDown": "The tag value. This should be name of the environment."
+    },
+    {
+      "name": "deploymentName",
+      "type": "string",
+      "label": "Deployment Name",
+      "defaultValue": "$(Release.DefinitionName)",
+      "required": true,
+      "helpMarkDown": "The deployment name. This should be name of release definition."
+    },
+    {
+      "name": "deploymentVersion",
+      "type": "string",
+      "label": "Deployment Version",
+      "defaultValue": "$(Release.ReleaseId)",
+      "required": true,
+      "helpMarkDown": "The deployment version. This should release id."
+    },
+    {
+      "name": "deploymentProject",
+      "type": "string",
+      "label": "Deployment Project",
+      "defaultValue": "$(System.TeamProject)",
+      "required": true,
+      "helpMarkDown": "The name of the team project"
+    },
+    {
+      "name": "ciLink",
+      "type": "string",
+      "label": "CI LInk",
+      "defaultValue": "$(System.TeamFoundationCollectionUri)",
+      "required": true,
+      "helpMarkDown": "Where the release is coming from. This value should be the VSTS url"
+    },
+    {
+      "name": "jenkinsUrl",
+      "type": "string",
+      "label": "VSTS URL",
+      "defaultValue": "$(System.TeamFoundationCollectionUri)",
+      "required": true,
+      "helpMarkDown": "Where the release is coming from. This value should be the VSTS url"
+    },
+    {
+      "name": "buildUrl",
+      "type": "string",
+      "label": "Release Url",
+      "defaultValue": "$(Release.ReleaseUri)",
+      "required": true,
+      "helpMarkDown": "Url to the build/release"
+    },
+    {
+      "name": "gitCommit",
+      "type": "string",
+      "label": "Git Commit",
+      "defaultValue": "$(Release.Artifacts.{alias}.RequestedForID)",
+      "required": true,
+      "helpMarkDown": "Commit id that kicked off the build/release. Alias default is _<name of the build>. You can find the build alias by looking at the artifcats in the release pipeline. "
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "pushDeploymentEventTask.js",
+      "argumentFormat": ""
+    }
+  }
+}

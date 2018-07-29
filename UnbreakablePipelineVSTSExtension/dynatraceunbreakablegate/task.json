@@ -1,0 +1,182 @@
+{
+  "id": "3950d550-9283-11e8-bc67-3dfa2c0696c1",
+  "name": "dynatraceunbreakablegate",
+  "friendlyName": "Dynatrace Unbreakable Release Gate",
+  "description": "Uses Dynatrace monitoring to determine if gate should pass or fail.",
+  "author": "Abel Wang",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+      "Build",
+      "Release"
+  ],
+  "runsOn": [
+    "ServerGate"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "1"
+  },
+  "instanceNameFormat": "Dynatrace Unbreakable Pipeline Release Gate $(message)",
+  "inputs": [
+    {
+      "name": "UnbreakableGateFunctionUrl",
+      "type": "string",
+      "label": "Unbreakable Gate Function Url",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "URL to Azure Function hosting Dynatrace Unbreakable Gate"
+    },
+    {
+      "name": "UnbreakableGateFunctionKey",
+      "type": "string",
+      "label": "Unbreakable Gate Function Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Secret Key to Azure Function hosting Dynatrace Unbreakable Gate"
+    },
+    {
+      "name": "monspecUrl",
+      "type": "string",
+      "label": "Monspec Url",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Url to the Dyntrace Monspec file."
+    },
+    {
+      "name": "pipelineInfoUrl",
+      "type": "string",
+      "label": "Pipeline Info Url",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Url to the pipeline info file."
+    },
+    {
+      "name": "dynatraceTennantUrl",
+      "type": "string",
+      "label": "Dynatrace Tenant Url",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Url to the Dynatrace Tenant."
+    },
+    {
+      "name": "dynatraceToken",
+      "type": "string",
+      "label": "Dynatrace Token",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Authentication token for your Dynatrace Tenant."
+    },
+    {
+      "name": "proxyUrl",
+      "type": "string",
+      "label": "Dynatrace Proxy Url",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "URL to the Dynatrace monspec proxy."
+    },
+    {
+      "name": "serviceToCompare",
+      "type": "string",
+      "label": "Service To Compare",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Service To Compare for the Dynatrace Unbreakable Gate."
+    },
+    {
+      "name": "compareWindow",
+      "type": "string",
+      "label": "Compare Window",
+      "defaultValue": "5",
+      "required": true,
+      "helpMarkDown": "The number of minutes to compare."
+    },
+    {
+      "name": "PlanUrl",
+      "type": "string",
+      "label": "VSTS Plan Url",
+      "defaultValue": "$(system.CollectionUri)",
+      "required": true,
+      "helpMarkDown": "Url the the VSTS collection plan."
+    },
+    {
+      "name": "ProjectId",
+      "type": "string",
+      "label": "VSTS Project Id",
+      "defaultValue": "$(system.TeamProjectId)",
+      "required": true,
+      "helpMarkDown": "Id to the VSTS Team Project."
+    },
+    {
+      "name": "HubName",
+      "type": "string",
+      "label": "Hub Name",
+      "defaultValue": "$(system.HostType)",
+      "required": true,
+      "helpMarkDown": "Where the task is being run. Either Hub or Server."
+    },
+    {
+      "name": "PlanId",
+      "type": "string",
+      "label": "Plan Id",
+      "defaultValue": "$(system.PlanId)",
+      "required": true,
+      "helpMarkDown": "VSTS Plan Id."
+    },
+    {
+      "name": "JobId",
+      "type": "string",
+      "label": "Job Id",
+      "defaultValue": "$(system.JobId)",
+      "required": true,
+      "helpMarkDown": "VSTS Job Id."
+    },
+    {
+      "name": "TimelineId",
+      "type": "string",
+      "label": "Timeline Id",
+      "defaultValue": "$(system.TimelineId)",
+      "required": true,
+      "helpMarkDown": "VSTS Timeline Id."
+    },
+    {
+      "name": "TaskInstanceId",
+      "type": "string",
+      "label": "Task Instance Id",
+      "defaultValue": "$(system.TaskInstanceId)",
+      "required": true,
+      "helpMarkDown": "Task Instance Id."
+    },
+    {
+      "name": "AuthToken",
+      "type": "string",
+      "label": "Authentication Token",
+      "defaultValue": "$(system.AccessToken)",
+      "required": true,
+      "helpMarkDown": "VSTS authentication token."
+    },
+    {
+      "name": "AuthToken",
+      "type": "string",
+      "label": "Authentication Token",
+      "defaultValue": "$(system.AccessToken)",
+      "required": true,
+      "helpMarkDown": "VSTS authentication token."
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "endpointId": "",
+        "endpointUrl": "$(UnbreakableGateFunctionUrl)?code=$(UnbreakableGateFunctionKey)",
+        "method": "POST",
+        "body": "{ \"Content-Type\":\"application/json\", \"PlanUrl\": \"$(PlanUrl)\", \"ProjectId\": \"$(ProjectId)\", \"HubName\": \"$(HubName)\", \"PlanId\": \"$(PlanId)\", \"JobId\": \"$(JobId)\", \"TimelineId\": \"$(TimelineId)\", \"TaskInstanceId\": \"$(TaskInstanceId)\", \"AuthToken\": \"$(AuthToken)\", \"monspecUrl\": \"$(monspecUrl)\", \"pipelineInfoUrl\": \"$(pipelineInfoUrl)\", \"dynatraceTennantUrl\": \"$(dynatraceTennantUrl)\", \"dynatraceToken\": \"$(dynatraceToken)\", \"proxyUrl\": \"$(proxyUrl)\", \"serviceToCompare\":\"$(serviceToCompare)\", \"compareWindow\": \"$(compareWindow)\" }",
+        "headers": "{ \"Content-Type\":\"application/json\"  }",
+        "WaitForCompletion": true,
+        "Expression": ""
+      }
+    }
+  }
+}
