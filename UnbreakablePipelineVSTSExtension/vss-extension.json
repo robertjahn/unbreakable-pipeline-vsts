@@ -1,7 +1,7 @@
 {
 	"manifestVersion": 1,
 	"id": "DynatraceUnbreakablePipeline",
-	"version": "1.0.46",
+	"version": "1.0.50",
 	"name": "Dynatrace Unbreakable Pipeline VSTS Extension",
 	"description": "A VSTS Extension to enable the unbreakable Dynatrace pipeline",
 	"publisher": "abelwang",
@@ -14,16 +14,6 @@
         "default": "/images/squid-head-small.png"
 	 },
 	"contributions": [
-		{
-			"id": "HelloBuildTask",
-			"type": "ms.vss-distributed-task.task",
-			"targets": [
-				"ms.vss-distributed-task.tasks"
-			],
-			"properties": {
-				"name": "buildtask"
-			}
-		},
 		{
 			"id": "PushDeploymentEventTask",
 			"type": "ms.vss-distributed-task.task",
@@ -46,9 +36,6 @@
 		}
 	],
 	"files":[
-		{
-			"path": "buildtask"			
-		},
 		{
 			"path": "pushdeploymenteventtask"
 		},

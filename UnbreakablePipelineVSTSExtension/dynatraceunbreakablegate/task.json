@@ -17,7 +17,7 @@
   "version": {
     "Major": "0",
     "Minor": "1",
-    "Patch": "1"
+    "Patch": "4"
   },
   "instanceNameFormat": "Dynatrace Unbreakable Pipeline Release Gate $(message)",
   "inputs": [
@@ -148,14 +148,6 @@
       "defaultValue": "$(system.TaskInstanceId)",
       "required": true,
       "helpMarkDown": "Task Instance Id."
-    },
-    {
-      "name": "AuthToken",
-      "type": "string",
-      "label": "Authentication Token",
-      "defaultValue": "$(system.AccessToken)",
-      "required": true,
-      "helpMarkDown": "VSTS authentication token."
     },
     {
       "name": "AuthToken",
