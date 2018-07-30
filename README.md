@@ -15,7 +15,7 @@ To implement the Unbreakable Pipeline, you will need the Dynatrace Unbreakable P
 - Dynatrace Unbreakable Pipeline Release Gate
 - Dynatrace Push Deployment Event Task
 
-You can find the code for the extension [here](https://github.com/dynatrace-innovationlab/unbreakable-pipeline-vsts/tree/master/UnbreakablePipelineVSTSExtension)
+You can find the code for the extension [here](https://github.com/dynatrace-innovationlab/unbreakable-pipeline-vsts/tree/master/UnbreakablePipelineVSTSExtension).
 
 ### Dynatrace Unbreakable Pipeline Gate - Azure Function
 
