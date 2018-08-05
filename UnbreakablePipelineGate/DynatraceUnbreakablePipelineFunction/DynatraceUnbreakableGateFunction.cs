@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DynatraceUnbreakablePipelineFunction.Proxies;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -17,7 +18,7 @@ namespace DynatraceUnbreakablePipelineFunction
     public static class DynatraceUnbreakableGateFunction
     {
         [FunctionName("ProcessUnbreakableGate")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        public async static Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a dynatrace unbreakable gate.");
 
@@ -50,10 +51,11 @@ namespace DynatraceUnbreakablePipelineFunction
             
             // async process gate
             var executionThread = new Thread(new ThreadStart(executionObject.Execute));
+            executionThread.Name = "Execution Thread";
             executionThread.Start();
 
             // return back return object
-            return req.CreateResponse(HttpStatusCode.OK, "processing monspec...", "application/json");
+            return HttpRequestProxy.CreateResponse(req, HttpStatusCode.OK, "processing monspec...", "application/json");
 
         }
 

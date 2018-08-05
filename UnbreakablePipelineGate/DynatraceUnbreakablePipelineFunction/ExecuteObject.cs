@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DynatraceUnbreakablePipelineFunction
 {
-    class ExecuteObject
+    public class ExecuteObject
     {
         public readonly static string HUBNAME = "Gates";
         //public readonly static string HUBNAME = "Release";
