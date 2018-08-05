@@ -1,5 +1,18 @@
 # Dynatrace Unbreakable Pipeline for VSTS
 
+Original Developer: Abel Wang (Microsoft)
+Maintainer: Dynatrace Innovation Lab (Main contact: @grabnerandi)
+
+Special thanks goes to Abel Wang and Donovan Brown who started implementing this plugin. More details on Abels blog about [The Dynatrace Unbreakable Pipeline in VSTS and Azure](https://abelsquidhead.com/index.php/2018/08/03/the-dynatrace-unbreakable-pipeline-in-vsts-and-azure-bam/)
+
+*Disclaimer*
+The Dynatrace Unbreakable Pipeline for VSTS plugin is currently in Early Access.
+Early Access releases provide early-stage insight into new features and functionality of the Dynatrace Platform. They enable you to provide feedback that can significantly impact our direction and implementation.
+
+While Early Access releases aren't ready to be used to build production solutions, they're at a stage where you can test and tinker with an implementation. As we receive feedback and iterate on a project, we anticipate breaking changes without advanced warning, so Early Access releases should not be used in a user-facing manner or applied to production environments.
+
+# Dynatrace Unbreakable Pipeline for VSTS
+
 The Dynatrace Unbreakable Pipeline for VSTS consists of the following use case:
 
 - monitor your app in all the environments using Dynatrace
