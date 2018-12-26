@@ -62,9 +62,6 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.2.1\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="mscorlib.4.0.0.0.Fakes">
-      <HintPath>FakesAssemblies\mscorlib.4.0.0.0.Fakes.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.4.0.0.0.Fakes">
       <HintPath>FakesAssemblies\System.4.0.0.0.Fakes.dll</HintPath>
@@ -92,7 +89,6 @@
     <Fakes Include="Fakes\Microsoft.Azure.WebJobs.Host.fakes" />
     <Fakes Include="Fakes\Microsoft.Extensions.Logging.Abstractions.fakes" />
     <Fakes Include="Fakes\System.fakes" />
-    <Fakes Include="Fakes\mscorlib.fakes" />
     <Fakes Include="Fakes\System.Net.Http.fakes" />
     <Fakes Include="Fakes\DynatraceUnbreakablePipelineFunction.fakes" />
     <None Include="packages.config" />
