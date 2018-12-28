@@ -7,9 +7,9 @@ queue:
   - visualstudio
   - vstest
 
- variables:
-	SOLUTION: "**/*.sln"
-	ARTIFACT_NAME: "drop"
+variables:
+  SOLUTION: "**/*.sln"
+  ARTIFACT_NAME: "drop"
 
 steps:
 - task: NuGetCommand@2
