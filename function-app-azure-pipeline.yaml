@@ -8,7 +8,7 @@ queue:
   - vstest
 
 variables:
-  SOLUTION: "UnbreakablePipelineFunctions/UnbreakablePipelineFunctions.sln"
+  SOLUTION: "UnbreakablePipelineFunctions/DynatraceUnbreakablePipeline.sln"
   ARTIFACT_NAME: "drop"
 
 steps:
