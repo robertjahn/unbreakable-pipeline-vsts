@@ -74,7 +74,7 @@ namespace DynatraceUnbreakablePipelineFunction
             {
                 logMessage = "GateHelper.GetVstsConnection(): Attempting to get VssConnection to: " + this.VstsUrl;
                 this.Log.Info(logMessage);
-                this.Connection = new VssConnection(new Uri(this.VstsUrl), new VssBasicCredential("", this.AuthToken));
+                    this.Connection = new VssConnection(new Uri(this.VstsUrl), new VssBasicCredential("", this.AuthToken));
                 logMessage = "GetVstsConnection: Got VssConnection to: " + this.VstsUrl;
                 this.Log.Info(logMessage);
             }
@@ -211,7 +211,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 return;
             }
 
-            logMessage = "GateHelper.FinishGate(): Starting";
+            logMessage = "GateHelper.FinishGate(): Starting for this.HubName: " + this.HubName;
             this.Log.Info(logMessage);
             SendLiveLogMessage(logMessage);
 
@@ -221,14 +221,20 @@ namespace DynatraceUnbreakablePipelineFunction
                     ? this.TimelineRecord.Id
                     : this.JobGuid;
 
+            logMessage = "GateHelper.FinishGate(): Using this.HubName: " + this.HubName + " and jobId: " + jobId + " taskResult: " + taskResult.ToString(); 
             var taskCompletedEvent = new TaskCompletedEvent();
 
             try
             {
-                logMessage = "GateHelper.FinishGate(): Attempting to create TaskCompletedEvent for jobId: " + jobId;
+                logMessage = "GateHelper.FinishGate(): Attempting to create TaskCompletedEvent for TaskInstanceGuid: " + this.TaskInstanceGuid;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
-                taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
+
+                //https://blogs.msdn.microsoft.com/aseemb/2017/12/18/async-http-agentless-task/
+                // original
+                //taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
+                //public TaskCompletedEvent(Guid jobId, Guid taskId, TaskResult taskResult);
+                taskCompletedEvent = new TaskCompletedEvent(jobId, this.TaskInstanceGuid, taskResult);
             }
             catch (Exception e)
             {
@@ -239,7 +245,7 @@ namespace DynatraceUnbreakablePipelineFunction
 
             try
             {
-                logMessage = "GateHelper.FinishGate(): Attempting to call TaskClient.RaisePlanEventAsync() method";
+                logMessage = "GateHelper.FinishGate(): Attempting to call TaskClient.RaisePlanEventAsync() method with ProjectGuid: " + this.ProjectGuid + " and PlanGuid: " + this.PlanGuid;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
 

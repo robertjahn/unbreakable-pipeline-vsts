@@ -65,8 +65,8 @@ namespace DynatraceUnbreakablePipelineFunction
             }
             catch (Exception e)
             {
-                log.Error("DynatraceUnbreakableGateFunction: Raising Exception");
-                return HttpRequestProxy.CreateResponse(req, HttpStatusCode.BadRequest, "Missing POST body or error parsing request POST body: " + e.Message, "application/json");
+                log.Error("DynatraceUnbreakableGateFunction: Raising Exception: " + e.Message);
+                return HttpRequestProxy.CreateResponse(req, HttpStatusCode.BadRequest, "Exception: " + e.Message, "application/json");
             }
         }
 
