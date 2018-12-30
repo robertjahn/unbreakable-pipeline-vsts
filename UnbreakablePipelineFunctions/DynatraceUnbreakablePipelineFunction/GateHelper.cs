@@ -135,7 +135,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 var timeLineRecords = this.TaskClient.GetRecordsAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.TimelineGuid).SyncResult();
                 this.TimelineRecord = timeLineRecords.Where(record => record.ParentId != null)
                     .First();
-                logMessage = "GateHelper.GetTaskTimelineRecord(): Got TaskClient.GetRecordsAsync.SyncResult.First";
+                logMessage = "GateHelper.GetTaskTimelineRecord(): Got TimelineRecord.Id: " + this.TimelineRecord.Id;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage("LIVE: " + logMessage);
             }
@@ -155,7 +155,8 @@ namespace DynatraceUnbreakablePipelineFunction
             if (this.TaskClient != null)
             {
                 this.Log.Info("GateHelper.SendLiveLogMessage(): Start");
-                this.TaskClient.AppendTimelineRecordFeedAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.Plan.Timeline.Id, this.JobGuid, liveFeedList);
+                //this.TaskClient.AppendTimelineRecordFeedAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.Plan.Timeline.Id, this.JobGuid, liveFeedList);
+                this.TaskClient.AppendTimelineRecordFeedAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.TimelineGuid, this.JobGuid, liveFeedList);
                 this.Log.Info("GateHelper.SendLiveLogMessage(): Complete");
             }
             else
@@ -211,7 +212,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 return;
             }
 
-            logMessage = "GateHelper.FinishGate(): Starting for this.HubName: " + this.HubName;
+            logMessage = "GateHelper.FinishGate(): Starting for HubName: " + this.HubName;
             this.Log.Info(logMessage);
             SendLiveLogMessage(logMessage);
 
@@ -221,7 +222,10 @@ namespace DynatraceUnbreakablePipelineFunction
                     ? this.TimelineRecord.Id
                     : this.JobGuid;
 
-            logMessage = "GateHelper.FinishGate(): Using this.HubName: " + this.HubName + " and jobId: " + jobId + " taskResult: " + taskResult.ToString(); 
+            logMessage = "GateHelper.FinishGate(): Using HubName: " + this.HubName + " and jobId: " + jobId + " taskResult: " + taskResult.ToString();
+            this.Log.Info(logMessage);
+            SendLiveLogMessage(logMessage);
+
             var taskCompletedEvent = new TaskCompletedEvent();
 
             try
@@ -230,11 +234,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
 
-                //https://blogs.msdn.microsoft.com/aseemb/2017/12/18/async-http-agentless-task/
-                // original
-                //taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
-                //public TaskCompletedEvent(Guid jobId, Guid taskId, TaskResult taskResult);
-                taskCompletedEvent = new TaskCompletedEvent(jobId, this.TaskInstanceGuid, taskResult);
+                taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
             }
             catch (Exception e)
             {
@@ -250,6 +250,10 @@ namespace DynatraceUnbreakablePipelineFunction
                 SendLiveLogMessage(logMessage);
 
                 this.TaskClient.RaisePlanEventAsync(this.ProjectGuid, this.HubName, this.PlanGuid, taskCompletedEvent).SyncResult();
+
+                logMessage = "GateHelper.FinishGate(): Complete";
+                this.Log.Info(logMessage);
+                SendLiveLogMessage(logMessage);
             }
             catch (Exception e)
             {
@@ -257,10 +261,6 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
             }   
-
-            logMessage = "GateHelper.FinishGate(): Complete";
-            this.Log.Info(logMessage);
-            SendLiveLogMessage(logMessage);
         }
     }
 }
