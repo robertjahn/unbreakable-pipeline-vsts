@@ -129,7 +129,7 @@ namespace GateTest.Behaviors
                 #endregion
 
                 #region Assert
-                Assert.AreEqual("C# HTTP trigger function processed a dynatrace unbreakable gate.", logMessageList[0]);
+                Assert.AreEqual("DynatraceUnbreakableGateFunction: Start", logMessageList[0]);
                 #endregion
             }
         }
@@ -366,7 +366,7 @@ namespace GateTest.Behaviors
 
                 #region Assert
                 Assert.AreEqual(HttpStatusCode.OK, theCode, "Status code is wrong");
-                Assert.AreEqual("processing monspec...", theMsg, "response message is wrong");
+                Assert.AreEqual("Started Async processing of monspec...", theMsg, "response message is wrong");
                 Assert.AreEqual("application/json", theReturnType, "returnType is wrong");
                 #endregion
             }
