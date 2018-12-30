@@ -150,7 +150,7 @@ namespace DynatraceSelfHealingFunction.VSTS
 
         private ListReleasesRootobject ListReleases(string project, int releaseDefinitionId)
         {
-            var theUrl = "https://msvstsdemo-a.vsrm.visualstudio.com/AbelUnbreakablePipelineDemo/_apis/release/releases?api-version=4.1-preview.6&definitionId=1";
+            //var theUrl = "https://msvstsdemo-a.vsrm.visualstudio.com/AbelUnbreakablePipelineDemo/_apis/release/releases?api-version=4.1-preview.6&definitionId=1";
             var apiUrl = GetVstsReleaseApiUrl() + "/" + project + "/_apis/release/releases?api-version=4.1-preview.6&definitionId=" + releaseDefinitionId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
             request.UserAgent = "DynatraceSelfHealingFunction";

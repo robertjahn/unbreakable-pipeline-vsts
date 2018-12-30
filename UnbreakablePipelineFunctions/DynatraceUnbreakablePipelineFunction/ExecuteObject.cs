@@ -3,13 +3,14 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Net;
 using System.Text;
+using System;
 
 
 namespace DynatraceUnbreakablePipelineFunction
 {
     public class ExecuteObject
     {
-        public readonly static string HUBNAME = "Gates";
+        //public readonly static string HUBNAME = "Gates";
         //public readonly static string HUBNAME = "Release";
 
         public string MonspecUrl { get; set; }
@@ -51,8 +52,10 @@ namespace DynatraceUnbreakablePipelineFunction
             string serviceToCompare,
             TraceWriter log)
         {
+            log.Info("ExecuteObject initialize: Start");
+
             this.MonspecUrl = monspecUrl;
-            this.PipelineInfoUrl = pipelineInfoUrl; ;
+            this.PipelineInfoUrl = pipelineInfoUrl;
             this.DynatraceTennantUrl = dynatraceTennantUrl;
             this.DynatraceToken = dynatraceToken;
             this.ProxyUrl = proxyUrl;
@@ -69,6 +72,8 @@ namespace DynatraceUnbreakablePipelineFunction
             this.HubName = hubName;
 
             this.Log = log;
+
+            log.Info("ExecuteObject initialize: Complete");
         }
 
         public string MonspecPullRequestReturnString()
@@ -77,6 +82,7 @@ namespace DynatraceUnbreakablePipelineFunction
             var monspecString = string.Empty;
             using (var client = new WebClient())
             {
+                this.Log.Info("MonspecPullRequestReturnString: attempting to read MonspecUrl: " + this.MonspecUrl);
                 var monspecByteArray = client.DownloadData(this.MonspecUrl);
                 monspecString = System.Text.Encoding.Default.GetString(monspecByteArray);
 
@@ -86,11 +92,13 @@ namespace DynatraceUnbreakablePipelineFunction
             var pipelineInfoString = string.Empty;
             using (var client = new WebClient())
             {
+                this.Log.Info("MonspecPullRequestReturnString: attempting to read PipelineInfoUrl: " + this.PipelineInfoUrl);
                 var pipelineInfoByteArray = client.DownloadData(this.PipelineInfoUrl);
                 pipelineInfoString = Encoding.Default.GetString(pipelineInfoByteArray);
             }
 
             // make web api call to proxy 
+            this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to ProxyUrl: " + this.ProxyUrl);
             var req = WebRequest.Create(this.ProxyUrl);
             var postDataBuilder = new StringBuilder();
             postDataBuilder.Append("serviceToCompare=");
@@ -118,9 +126,12 @@ namespace DynatraceUnbreakablePipelineFunction
             sout.Close();
 
             // read response back as string
+            this.Log.Info("MonspecPullRequestReturnString: Making Monspec request to ProxyUrl: " + this.ProxyUrl);
             WebResponse res = req.GetResponse();
             StreamReader sr = new StreamReader(res.GetResponseStream());
             string returnvalue = sr.ReadToEnd();
+
+            this.Log.Info("MonspecPullRequestReturnString: Monspec request got back: " + returnvalue);
 
             // parse and turn into object
             return returnvalue;
@@ -139,6 +150,11 @@ namespace DynatraceUnbreakablePipelineFunction
         // long running method called by seperate thread
         public void Execute()
         {
+            Boolean success = false;
+            var logMessage = "ExecuteObject.Execute: Start";
+            this.Log.Info(logMessage);
+
+            String response;
             var gateHelper = new GateHelper(
                 this.TaskInstanceId,
                 this.HubName,
@@ -147,30 +163,72 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.TimelineId,
                 this.ProjectId,
                 this.VstsUrl,
-                this.AuthToken);
+                this.AuthToken,
+                this.Log);
 
+            this.Log.Info("ExecuteObject.Execute: finished creating new GateHelper");
 
-            // query dynatrace with monspec. this is a long running command
-            // sending live log message
-            gateHelper.SendLiveLogMessage("querying Dynatrace with monspec...");
-            var response = this.MonspecPullRequestReturnString();
-            var pullCompareResponseObj = JsonConvert.DeserializeObject<PullCompareResponse>(response);
-            gateHelper.SendLiveLogMessage("finished querying Dynatrace");
-
-            // finished with long running work, will now send offline logs and then send task complete event back to vsts
-            gateHelper.SendOfflineLog(response);
-
-            // check response and either pass or fail gate
-            if (pullCompareResponseObj.totalViolations == 0)
+            try
             {
-                this.Log.Info("There are zero violations, sending succeeded to gate");
-                gateHelper.FinishGate(GateHelper.Result.Succeeded, response);
+                // Setup connections and obtain DevOps details
+                gateHelper.GetVstsConnection();
+                gateHelper.GetTaskClient();
+                gateHelper.GetTaskClientPlan();
+                gateHelper.GetTaskTimelineRecord();
+                logMessage = "ExecuteObject.Execute: finished getting connections and obtain DevOps task details";
+                gateHelper.SendLiveLogMessage(logMessage);
+                this.Log.Info(logMessage);
+
+                // query dynatrace with monspec. this is a long running command
+                logMessage = "ExecuteObject.Execute: querying Dynatrace with monspec";
+                gateHelper.SendLiveLogMessage(logMessage);
+                this.Log.Info(logMessage);
+                response = this.MonspecPullRequestReturnString();
+                logMessage = "ExecuteObject.Execute: finished Dynatrace monspec query";
+                gateHelper.SendLiveLogMessage(logMessage);
+                this.Log.Info(logMessage);
+
+                var pullCompareResponseObj = JsonConvert.DeserializeObject<PullCompareResponse>(response);
+                logMessage = "ExecuteObject.Execute: finished deserializing monspec response";
+                gateHelper.SendLiveLogMessage(logMessage);
+                this.Log.Info(logMessage);
+
+                // finished with long running work, will now send offline logs and then send task complete event back to vsts
+                gateHelper.SendOfflineLog(response);
+                this.Log.Info(response);
+
+                // check response and either pass or fail gate
+                if (pullCompareResponseObj.totalViolations == 0)
+                {
+                    this.Log.Info("ExecuteObject.Execute: There are zero violations, sending succeeded to gate");
+                    gateHelper.FinishGate(GateHelper.Result.Succeeded, response);
+                    success = true;
+                }
+                else
+                {
+                    this.Log.Error("ExecuteObject.Execute: There is a violation (" + pullCompareResponseObj.totalViolations + "), sending fail to gate: " + response);
+                    gateHelper.FinishGate(GateHelper.Result.Failed, response);
+                    return;
+                }
             }
-            else
+            catch (Exception e)
             {
-                this.Log.Error("There is a violation (" + pullCompareResponseObj.totalViolations +"), sending fail to gate: " + response);
-                //gateHelper.FinishGate(GateHelper.Result.Succeeded, response);
-                gateHelper.FinishGate(GateHelper.Result.Failed, response);
+                logMessage = "ExecuteObject.Execute exception: " + e.Message;
+                this.Log.Error(logMessage);
+            }
+
+            if (!success)
+            {
+                try
+                {
+                    this.Log.Error("ExecuteObject.Execute: calling FinishGate for processing exception FAILURE");
+                    gateHelper.FinishGate(GateHelper.Result.Failed, logMessage);
+                }
+                catch (Exception e2)
+                {
+                    logMessage = "ExecuteObject.Execute: There was an exception calling gateHelper.FinishGate" + e2.Message + ": " + e2.StackTrace;
+                    this.Log.Error(logMessage);
+                }
             }
         }
     }

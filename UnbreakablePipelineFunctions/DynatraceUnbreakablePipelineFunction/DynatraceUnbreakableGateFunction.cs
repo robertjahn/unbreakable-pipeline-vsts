@@ -20,43 +20,54 @@ namespace DynatraceUnbreakablePipelineFunction
         [FunctionName("ProcessUnbreakableGate")]
         public async static Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a dynatrace unbreakable gate.");
+            log.Info("DynatraceUnbreakableGateFunction: Start");
 
             // code to work around parsing issues
             TypeDescriptor.AddAttributes(typeof(IdentityDescriptor), new TypeConverterAttribute(typeof(IdentityDescriptorConverter).FullName));
             TypeDescriptor.AddAttributes(typeof(SubjectDescriptor), new TypeConverterAttribute(typeof(SubjectDescriptorConverter).FullName));
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            // read info from body of post
-            var contentString = await req.Content.ReadAsStringAsync();
-            var input = JsonConvert.DeserializeObject<InputData>(contentString);
+            try
+            {
+                var contentString = await req.Content.ReadAsStringAsync();
+                var input = JsonConvert.DeserializeObject<InputData>(contentString);
+                log.Info("DynatraceUnbreakableGateFunction: Read info from body of post");
 
-            var executionObject = new ExecuteObject(
-                input.hubName,
-                input.jobId,
-                input.planId,
-                input.timelineId,
-                input.projectId,
-                input.planUrl,
-                input.taskInstanceId,
-                input.authToken,
-                input.monspecUrl,
-                input.pipelineInfoUrl,
-                input.compareWindow,
-                input.dynatraceTennantUrl,
-                input.dynatraceToken,
-                input.proxyUrl,
-                input.serviceToCompare,
-                log);
-            
-            // async process gate
-            var executionThread = new Thread(new ThreadStart(executionObject.Execute));
-            executionThread.Name = "Execution Thread";
-            executionThread.Start();
+                var executionObject = new ExecuteObject(
+                    input.hubName,
+                    input.jobId,
+                    input.planId,
+                    input.timelineId,
+                    input.projectId,
+                    input.planUrl,
+                    input.taskInstanceId,
+                    input.authToken,
+                    input.monspecUrl,
+                    input.pipelineInfoUrl,
+                    input.compareWindow,
+                    input.dynatraceTennantUrl,
+                    input.dynatraceToken,
+                    input.proxyUrl,
+                    input.serviceToCompare,
+                    log);
+                log.Info("DynatraceUnbreakableGateFunction: Parsed info from body of post and stored in executionObject");
 
-            // return back return object
-            return HttpRequestProxy.CreateResponse(req, HttpStatusCode.OK, "processing monspec...", "application/json");
+                // async process gate
+                var executionThread = new Thread(new ThreadStart(executionObject.Execute));
+                log.Info("DynatraceUnbreakableGateFunction: Created Thread for processing");
 
+                executionThread.Name = "Execution Thread";
+                executionThread.Start();
+                log.Info("DynatraceUnbreakableGateFunction: Started Thread for processing");
+
+                // return back return object
+                return HttpRequestProxy.CreateResponse(req, HttpStatusCode.OK, "Started Async processing of monspec...", "application/json");
+            }
+            catch (Exception e)
+            {
+                log.Error("DynatraceUnbreakableGateFunction: Raising Exception");
+                return HttpRequestProxy.CreateResponse(req, HttpStatusCode.BadRequest, "Missing POST body or error parsing request POST body: " + e.Message, "application/json");
+            }
         }
 
 
