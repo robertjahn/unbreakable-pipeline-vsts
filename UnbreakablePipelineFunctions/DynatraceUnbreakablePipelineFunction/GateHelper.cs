@@ -72,7 +72,7 @@ namespace DynatraceUnbreakablePipelineFunction
             // create connection to vsts
             try
             {
-                logMessage = "GetVstsConnection: Attempting to get VssConnection to: " + this.VstsUrl;
+                logMessage = "GateHelper.GetVstsConnection(): Attempting to get VssConnection to: " + this.VstsUrl;
                 this.Log.Info(logMessage);
                 this.Connection = new VssConnection(new Uri(this.VstsUrl), new VssBasicCredential("", this.AuthToken));
                 logMessage = "GetVstsConnection: Got VssConnection to: " + this.VstsUrl;
@@ -80,7 +80,7 @@ namespace DynatraceUnbreakablePipelineFunction
             }
             catch (Exception e)
             {
-                logMessage = "GetVstsConnection: Failed to connect to to: " + this.VstsUrl + ": " + e.Message;
+                logMessage = "GateHelper.GetVstsConnection(): Failed to connect to URL: " + this.VstsUrl + " using Token:" + this.AuthToken + " : " + e.Message;
                 this.Log.Error(logMessage);
                 throw;
             }
@@ -92,15 +92,15 @@ namespace DynatraceUnbreakablePipelineFunction
             // get task client - assumes has Connection
             try
             {
-                logMessage = "GetTaskClient: Attempting to get TaskHttpClient to: " + this.VstsUrl;
+                logMessage = "GateHelper.GetTaskClient(): Attempting to get TaskHttpClient to: " + this.VstsUrl;
                 this.Log.Info(logMessage);
                 this.TaskClient = this.Connection.GetClient<TaskHttpClient>();
-                logMessage = "GateHelper initialize: Got TaskHttpClient to: " + this.VstsUrl;
+                logMessage = "GateHelper.GateHelper() initialize: Got TaskHttpClient to: " + this.VstsUrl;
                 this.Log.Info(logMessage);
             }
             catch (Exception e)
             {
-                logMessage = "GetTaskClient: Failed to get TaskHttpClient to: " + this.VstsUrl + ": " + e.Message;
+                logMessage = "GateHelper.GetTaskClient(): Failed to get TaskHttpClient to: " + this.VstsUrl + ": " + e.Message;
                 this.Log.Error(logMessage);
                 throw;
             }
@@ -113,14 +113,15 @@ namespace DynatraceUnbreakablePipelineFunction
             try
             {
                 this.Plan = this.TaskClient.GetPlanAsync(this.ProjectGuid, this.HubName, this.PlanGuid).SyncResult();
-                logMessage = "GetTaskClientPlan: Got TaskClient.GetPlanAsync.SyncResult";
+                logMessage = "GateHelper.GetTaskClientPlan(): Got TaskClient.GetPlanAsync.SyncResult";
                 this.Log.Info(logMessage);
-                SendLiveLogMessage(logMessage);
+                SendLiveLogMessage("LIVE: " + logMessage);
             }
             catch (Exception e)
             {
-                logMessage = "GetTaskClientPlan: Failed to get GetTaskClientPlan: " + e.Message;
+                logMessage = "GateHelper.GetTaskClientPlan(): Failed to get GetTaskClientPlan: " + e.Message;
                 this.Log.Error(logMessage);
+                SendLiveLogMessage("LIVE: " + logMessage);
                 throw;
             }
         }
@@ -134,15 +135,15 @@ namespace DynatraceUnbreakablePipelineFunction
                 var timeLineRecords = this.TaskClient.GetRecordsAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.TimelineGuid).SyncResult();
                 this.TimelineRecord = timeLineRecords.Where(record => record.ParentId != null)
                     .First();
-                logMessage = "GetTaskTimelineRecord: Got TaskClient.GetRecordsAsync.SyncResult.First";
+                logMessage = "GateHelper.GetTaskTimelineRecord(): Got TaskClient.GetRecordsAsync.SyncResult.First";
                 this.Log.Info(logMessage);
-                SendLiveLogMessage(logMessage);
+                SendLiveLogMessage("LIVE: " + logMessage);
             }
             catch (Exception e)
             {
-                logMessage = "GetTaskTimelineRecord: Failed to get TaskClient.GetRecordsAsync.SyncResult.First: " + e.Message;
+                logMessage = "GateHelper.GetTaskTimelineRecord(): Failed to get TaskClient.GetRecordsAsync.SyncResult.First: " + e.Message;
                 this.Log.Error(logMessage);
-                SendLiveLogMessage("LIVE" + logMessage);
+                SendLiveLogMessage("LIVE: " + logMessage);
                 throw;
             }
 
@@ -153,13 +154,13 @@ namespace DynatraceUnbreakablePipelineFunction
             var liveFeedList = new List<string> { message };
             if (this.TaskClient != null)
             {
-                this.Log.Info("SendLiveLogMessage: Start");
+                this.Log.Info("GateHelper.SendLiveLogMessage(): Start");
                 this.TaskClient.AppendTimelineRecordFeedAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.Plan.Timeline.Id, this.JobGuid, liveFeedList);
-                this.Log.Info("SendLiveLogMessage: Complete");
+                this.Log.Info("GateHelper.SendLiveLogMessage(): Complete");
             }
             else
             {
-                this.Log.Info("SendLiveLogMessage: skipping due to no TaskClient. Message: " + message);
+                this.Log.Info("GateHelper.SendLiveLogMessage(): skipping due to no TaskClient. Message: " + message);
             }
         }
 
@@ -180,7 +181,7 @@ namespace DynatraceUnbreakablePipelineFunction
             }
             else
             {
-                this.Log.Info("SendOfflineLog: skipping due to no TaskClient");
+                this.Log.Info("GateHelper.SendOfflineLog(): skipping due to no TaskClient");
             }
         }
 
@@ -190,27 +191,27 @@ namespace DynatraceUnbreakablePipelineFunction
 
             if (this.TimelineRecord == null)
             {
-                logMessage = "GateHelper.FinishGate: Skipping for TimelineRecord is null";
+                logMessage = "GateHelper.FinishGate(): Skipping for TimelineRecord is null";
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
                 return;
             }
             if (this.JobGuid == null)
             {
-                logMessage = "GateHelper.FinishGate: Skipping for JobGuid is null";
+                logMessage = "GateHelper.FinishGate(): Skipping for JobGuid is null";
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
                 return;
             }
             if (this.HubName == null)
             {
-                logMessage = "GateHelper.FinishGate: Skipping for HubName is null";
+                logMessage = "GateHelper.FinishGate(): Skipping for HubName is null";
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
                 return;
             }
 
-            logMessage = "GateHelper.FinishGate: Starting";
+            logMessage = "GateHelper.FinishGate(): Starting";
             this.Log.Info(logMessage);
             SendLiveLogMessage(logMessage);
 
@@ -224,21 +225,21 @@ namespace DynatraceUnbreakablePipelineFunction
 
             try
             {
-                logMessage = "GateHelper.FinishGate: Attempting to create TaskCompletedEvent for jobId: " + jobId;
+                logMessage = "GateHelper.FinishGate(): Attempting to create TaskCompletedEvent for jobId: " + jobId;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
                 taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
             }
             catch (Exception e)
             {
-                logMessage = "GateHelper.FinishGate: Exception creating TaskCompletedEvent: " + e.Message;
+                logMessage = "GateHelper.FinishGate(): Exception creating TaskCompletedEvent: " + e.Message;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
             }
 
             try
             {
-                logMessage = "GateHelper.FinishGate: Attempting to call TaskClient.RaisePlanEventAsync() method";
+                logMessage = "GateHelper.FinishGate(): Attempting to call TaskClient.RaisePlanEventAsync() method";
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
 
@@ -246,12 +247,12 @@ namespace DynatraceUnbreakablePipelineFunction
             }
             catch (Exception e)
             {
-                logMessage = "GateHelper.FinishGate: Exception calling TaskClient.RaisePlanEventAsync: " + e.Message;
+                logMessage = "GateHelper.FinishGate(): Exception calling TaskClient.RaisePlanEventAsync: " + e.Message;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
             }   
 
-            logMessage = "GateHelper.FinishGate: Complete";
+            logMessage = "GateHelper.FinishGate(): Complete";
             this.Log.Info(logMessage);
             SendLiveLogMessage(logMessage);
         }

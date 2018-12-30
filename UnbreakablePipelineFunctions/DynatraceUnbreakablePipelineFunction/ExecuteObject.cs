@@ -151,7 +151,7 @@ namespace DynatraceUnbreakablePipelineFunction
         public void Execute()
         {
             Boolean success = false;
-            var logMessage = "ExecuteObject.Execute: Start";
+            var logMessage = "ExecuteObject.Execute(): Start";
             this.Log.Info(logMessage);
 
             String response;
@@ -166,7 +166,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.AuthToken,
                 this.Log);
 
-            this.Log.Info("ExecuteObject.Execute: finished creating new GateHelper");
+            this.Log.Info("ExecuteObject.Execute(): finished creating new GateHelper");
 
             try
             {
@@ -175,21 +175,21 @@ namespace DynatraceUnbreakablePipelineFunction
                 gateHelper.GetTaskClient();
                 gateHelper.GetTaskClientPlan();
                 gateHelper.GetTaskTimelineRecord();
-                logMessage = "ExecuteObject.Execute: finished getting connections and obtain DevOps task details";
+                logMessage = "ExecuteObject.Execute(): finished getting connections and obtain DevOps task details";
                 gateHelper.SendLiveLogMessage(logMessage);
                 this.Log.Info(logMessage);
 
                 // query dynatrace with monspec. this is a long running command
-                logMessage = "ExecuteObject.Execute: querying Dynatrace with monspec";
+                logMessage = "ExecuteObject.Execute(): querying Dynatrace with monspec";
                 gateHelper.SendLiveLogMessage(logMessage);
                 this.Log.Info(logMessage);
                 response = this.MonspecPullRequestReturnString();
-                logMessage = "ExecuteObject.Execute: finished Dynatrace monspec query";
+                logMessage = "ExecuteObject.Execute(): finished Dynatrace monspec query";
                 gateHelper.SendLiveLogMessage(logMessage);
                 this.Log.Info(logMessage);
 
                 var pullCompareResponseObj = JsonConvert.DeserializeObject<PullCompareResponse>(response);
-                logMessage = "ExecuteObject.Execute: finished deserializing monspec response";
+                logMessage = "ExecuteObject.Execute(): finished deserializing monspec response";
                 gateHelper.SendLiveLogMessage(logMessage);
                 this.Log.Info(logMessage);
 
@@ -200,20 +200,20 @@ namespace DynatraceUnbreakablePipelineFunction
                 // check response and either pass or fail gate
                 if (pullCompareResponseObj.totalViolations == 0)
                 {
-                    this.Log.Info("ExecuteObject.Execute: There are zero violations, sending succeeded to gate");
+                    this.Log.Info("ExecuteObject.Execute(): There are zero violations, sending succeeded to gate");
                     gateHelper.FinishGate(GateHelper.Result.Succeeded, response);
                     success = true;
                 }
                 else
                 {
-                    this.Log.Error("ExecuteObject.Execute: There is a violation (" + pullCompareResponseObj.totalViolations + "), sending fail to gate: " + response);
+                    this.Log.Error("ExecuteObject.Execute(): There is a violation (" + pullCompareResponseObj.totalViolations + "), sending fail to gate: " + response);
                     gateHelper.FinishGate(GateHelper.Result.Failed, response);
                     return;
                 }
             }
             catch (Exception e)
             {
-                logMessage = "ExecuteObject.Execute exception: " + e.Message;
+                logMessage = "ExecuteObject.Execute() exception: " + e.Message;
                 this.Log.Error(logMessage);
             }
 
@@ -221,12 +221,12 @@ namespace DynatraceUnbreakablePipelineFunction
             {
                 try
                 {
-                    this.Log.Error("ExecuteObject.Execute: calling FinishGate for processing exception FAILURE");
+                    this.Log.Error("ExecuteObject.Execute(): calling FinishGate for processing exception FAILURE");
                     gateHelper.FinishGate(GateHelper.Result.Failed, logMessage);
                 }
                 catch (Exception e2)
                 {
-                    logMessage = "ExecuteObject.Execute: There was an exception calling gateHelper.FinishGate" + e2.Message + ": " + e2.StackTrace;
+                    logMessage = "ExecuteObject.Execute(): There was an exception calling gateHelper.FinishGate" + e2.Message + ": " + e2.StackTrace;
                     this.Log.Error(logMessage);
                 }
             }
