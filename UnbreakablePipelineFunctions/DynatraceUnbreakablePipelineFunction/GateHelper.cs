@@ -233,7 +233,9 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
 
-                taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
+                //taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
+                taskCompletedEvent = new TaskCompletedEvent(jobId, Guid.Empty, taskResult);
+
             }
             catch (Exception e)
             {
