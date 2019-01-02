@@ -16,6 +16,7 @@ namespace DynatraceSelfHealingFunction.VSTS
         public string VSTSUrl { get; set; }
         public string VSTSPAT { get; set; }
         public TraceWriter Log { get; set; }
+        public string VSTSReleaseApiUrl { get; set; }
 
         public VSTSHelper()
         {
@@ -93,7 +94,7 @@ namespace DynatraceSelfHealingFunction.VSTS
 
         private RedeployRootObject Redeploy(string project, int releaseId, int environmentId)
         {
-            var apiUrl = GetVstsReleaseApiUrl() + "/" + project + "/_apis/Release/releases/" + releaseId + "/environments/" + environmentId;
+            var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/Release/releases/" + releaseId + "/environments/" + environmentId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
 
             request.KeepAlive = true;
@@ -106,7 +107,7 @@ namespace DynatraceSelfHealingFunction.VSTS
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36";
             request.Headers.Add("X-TFS-Session", @"0a0daa44-1443-4b15-886a-a45e1ffc1899");
             request.Headers.Add("DNT", @"1");
-            var refererUrl = VSTSUrl + "/" + project + "/_releaseProgress?releaseId=" + releaseId + "&_a=release-pipeline-progress";
+            var refererUrl = this.VSTSUrl + "/" + project + "/_releaseProgress?releaseId=" + releaseId + "&_a=release-pipeline-progress";
             request.Referer = refererUrl;
             request.Headers.Set(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
             request.Headers.Set(HttpRequestHeader.AcceptLanguage, "en-US,en;q=0.9");
@@ -135,7 +136,7 @@ namespace DynatraceSelfHealingFunction.VSTS
 
         private GetReleaseRootObject GetRelease(string project, int releaseId)
         {
-            var apiUrl = GetVstsReleaseApiUrl() + "/" + project + "/_apis/release/releases/" + releaseId + "?api-version=4.1-preview.6";
+            var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/release/releases/" + releaseId + "?api-version=4.1-preview.6";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
             request.UserAgent = "DynatraceSelfHealingFunction";
             request.Headers.Set(HttpRequestHeader.Authorization, GetHeaderAuthorization());
@@ -151,7 +152,7 @@ namespace DynatraceSelfHealingFunction.VSTS
         private ListReleasesRootobject ListReleases(string project, int releaseDefinitionId)
         {
             //var theUrl = "https://msvstsdemo-a.vsrm.visualstudio.com/AbelUnbreakablePipelineDemo/_apis/release/releases?api-version=4.1-preview.6&definitionId=1";
-            var apiUrl = GetVstsReleaseApiUrl() + "/" + project + "/_apis/release/releases?api-version=4.1-preview.6&definitionId=" + releaseDefinitionId;
+            var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/release/releases?api-version=4.1-preview.6&definitionId=" + releaseDefinitionId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
             request.UserAgent = "DynatraceSelfHealingFunction";
             request.Headers.Set(HttpRequestHeader.Authorization, GetHeaderAuthorization());
@@ -166,8 +167,6 @@ namespace DynatraceSelfHealingFunction.VSTS
 
         }
 
-
-
         private string GetHeaderAuthorization()
         {
             var plainText = "abel:" + this.VSTSPAT;
@@ -175,31 +174,5 @@ namespace DynatraceSelfHealingFunction.VSTS
             return "Basic " + System.Convert.ToBase64String(plainTextBytes);
 
         }
-
-        private string GetVstsReleaseApiUrl()
-        {
-            var splitStringArray = this.VSTSUrl.Split(new char[] { '.' });
-            StringBuilder returnStringBuilder = new StringBuilder();
-
-
-            returnStringBuilder.Append(splitStringArray[0]);
-            returnStringBuilder.Append(".vsrm");
-
-            for (int i = 1; i < splitStringArray.Length; i++)
-            {
-                returnStringBuilder.Append(".");
-                returnStringBuilder.Append(splitStringArray[i]);
-            }
-
-            return returnStringBuilder.ToString();
-
-        }
-
-
-
-
-
-
-
     }
 }

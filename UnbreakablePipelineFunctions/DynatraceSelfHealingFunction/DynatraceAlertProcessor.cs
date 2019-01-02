@@ -15,7 +15,7 @@ namespace DynatraceSelfHealingFunction
 {
     public class DynatraceAlertProcessor
     {
-        public static readonly int DEFAULT_TIME_SPAN = 180 * 60 * 1000;
+        public string DTTimeSpanMinutes { get; set; }
 
         public TraceWriter Log { get; set; }
 
@@ -23,6 +23,8 @@ namespace DynatraceSelfHealingFunction
         public string DTTenantUrl { get; set; }
         public string DTVSTSUrl { get; set; }
         public string DTVSTSPAT { get; set; }
+        public string VSTSReleaseApiUrl { get; set; }
+        public string DTEnvironmentTag { get; set; }
 
         public HttpRequestMessage Request { get; set; }
         public dynamic NotificationObject { get; set; }
@@ -31,7 +33,8 @@ namespace DynatraceSelfHealingFunction
         public async Task<string> ProcessDynatraceAlert()
         {
             Log.Info("In ProcessDynatraceAlert(), notificationObject.ImpactedEnties: " + this.NotificationObject?.ImpactedEntities);
-            FixedEvent[] fixedEvents = await fixMostRecentDeploymentsOnEntities(NotificationObject?.ImpactedEntities, DEFAULT_TIME_SPAN);
+            var DTTimeSpanMS = 60 * 1000 * Int32.Parse(this.DTTimeSpanMinutes);
+            FixedEvent[] fixedEvents = await fixMostRecentDeploymentsOnEntities(NotificationObject?.ImpactedEntities, DTTimeSpanMS);
 
             Log.Info("fixed events, updating problem ticket");
             // we have our information and can now iterate and update the problem ticket
@@ -78,16 +81,19 @@ namespace DynatraceSelfHealingFunction
             {
                 VSTSUrl = this.DTVSTSUrl,
                 VSTSPAT = this.DTVSTSPAT,
+                VSTSReleaseApiUrl = this.VSTSReleaseApiUrl,
                 Log = this.Log
             };
 
             this.Log.Info("Iterating through deployment events and rolling back");
-            foreach (var problemEvent in mostRecentEvents)
+            foreach (var deployEvent in mostRecentEvents)
             {
-                this.Log.Info("Problem event: " + problemEvent);
-                var releaseId = int.Parse(problemEvent?.deploymentVersion.Value);
-                var vstsTeamProject = problemEvent?.deploymentProject.Value;
-                var environment = problemEvent?.tags?[0]?.value.Value;
+                this.Log.Info("Problem event: " + deployEvent);
+                var releaseId = int.Parse(deployEvent?.deploymentVersion.Value);
+                var vstsTeamProject = deployEvent?.deploymentProject.Value;
+
+                // need to find the environment value within the tag array
+                var environment = getEnvironmentTagValue(deployEvent);
 
                 // I want to use a custom event. Need to experiment
                 //var releaseName = problemEvent?.customProperties?.VSTSReleaseName.Value;
@@ -100,7 +106,7 @@ namespace DynatraceSelfHealingFunction
                 returnArray.Add(new FixedEvent
                 {
                     RollbackReleaseId = rollbackId,
-                    OrigEvent = problemEvent
+                    OrigEvent = deployEvent
                 });
             }
 
@@ -108,7 +114,23 @@ namespace DynatraceSelfHealingFunction
             return returnArray.ToArray();
         }
 
-
+        private string getEnvironmentTagValue(dynamic deployEvent)
+        {
+            this.Log.Info("getEnvironmentTagValue: Iterating through deployment tags, looking for: " + this.DTEnvironmentTag);
+            string environmentTagValue = "NOT_FOUND";
+            // loop through the tags and look for the environment one
+            // look for the tag's value in for the key stored in DTEnvironmentTag
+            foreach (var problemTag in deployEvent?.tags)
+            {
+                if (problemTag.key.Value == this.DTEnvironmentTag)
+                {
+                    this.Log.Info("getEnvironmentTagValue: Loop found key: " + problemTag.key.Value + " value: " + problemTag.value.Value);
+                    environmentTagValue = problemTag.value.Value;
+                }
+            }
+            this.Log.Info("getEnvironmentTagValue: Returning environmentTagValue: " + environmentTagValue);
+            return environmentTagValue;
+        }
 
         /**
          * Returns the most recent CUSTOM_DEPLOYMENT event on these passed entites where the event.source == VSTS

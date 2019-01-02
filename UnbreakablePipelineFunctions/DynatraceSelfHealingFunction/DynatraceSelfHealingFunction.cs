@@ -71,6 +71,9 @@ namespace DynatraceSelfHealingFunction
                 var dtTennantUrl = System.Environment.GetEnvironmentVariable("DT_TENANT_URL", EnvironmentVariableTarget.Process);
                 var dtVSTSUrl = System.Environment.GetEnvironmentVariable("DT_VSTSURL", EnvironmentVariableTarget.Process);
                 var dtVSTSPAT = System.Environment.GetEnvironmentVariable("DT_VSTSPAT", EnvironmentVariableTarget.Process);
+                var VSTSReleaseApiUrl = System.Environment.GetEnvironmentVariable("DT_VSTSRELEASEAPIURL", EnvironmentVariableTarget.Process);
+                var dtTimeSpanMinutes = System.Environment.GetEnvironmentVariable("DT_VSTSTIMESPANMINUTES", EnvironmentVariableTarget.Process);
+                var dtEnvironmentTag = System.Environment.GetEnvironmentVariable("DT_ENVIRONMENTTAG", EnvironmentVariableTarget.Process);
                 var messageBuilder = new StringBuilder();
 
                 // create log message
@@ -79,6 +82,8 @@ namespace DynatraceSelfHealingFunction
                 messageBuilder.AppendLine("DT Tenant URL: " + dtTennantUrl);
                 messageBuilder.AppendLine("DT VSTS Url: " + dtVSTSUrl);
                 messageBuilder.AppendLine("DT VSTS PAT: " + dtVSTSPAT);
+                messageBuilder.AppendLine("DT Time Span Minutes: " + dtTimeSpanMinutes);
+                messageBuilder.AppendLine("DT VSTS Release API: " + VSTSReleaseApiUrl);
                 log.Info(messageBuilder.ToString());
 
                 var alertProcessor = new DynatraceAlertProcessor
@@ -86,6 +91,8 @@ namespace DynatraceSelfHealingFunction
                     Log = log,
                     DTApiToken = dtApiToken,
                     DTTenantUrl = dtTennantUrl,
+                    DTTimeSpanMinutes = dtTimeSpanMinutes,
+                    DTEnvironmentTag = dtEnvironmentTag,
                     Request = req,
                     NotificationObject = notificationObject,
                     DTVSTSUrl = dtVSTSUrl,
