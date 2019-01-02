@@ -149,7 +149,12 @@ namespace DynatraceSelfHealingFunction.VSTS
             var reader = new StreamReader(response.GetResponseStream());
             var body = reader.ReadToEnd();
 
+            Log.Info("GetReleaseRootObject: before serialization");
+            Log.Info("GetReleaseRootObject: body: " + body);
+        
             var returnObj = JsonConvert.DeserializeObject<GetReleaseRootObject>(body);
+            Log.Info("GetReleaseRootObject: after serialization");
+
             return returnObj;
         }
 
