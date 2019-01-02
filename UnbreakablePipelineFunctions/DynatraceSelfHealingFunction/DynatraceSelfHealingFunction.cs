@@ -20,7 +20,7 @@ namespace DynatraceSelfHealingFunction
         [FunctionName("ProcessAlert")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
+            log.Info("ProcessAlert: Starting...");
 
             // this is needed for testing outside a pipeline
             if (req.GetConfiguration() == null)
@@ -34,32 +34,32 @@ namespace DynatraceSelfHealingFunction
             {
                 // read request post body
                 dynamic notificationObject = await req.Content.ReadAsAsync<object>();
-                log.Info("notification object: " + notificationObject);
+                log.Info("ProcessAlert: notification object: " + notificationObject);
 
                 // make sure all values needed are present
                 if (notificationObject?.PID == null)
                 {
-                    log.Error("missing PID");
-                    throw new Exception("Missing PID");
+                    log.Error("ProcessAlert: missing PID in notification object");
+                    throw new Exception("ProcessAlert: Missing PID in notification object");
                 }
 
                 if (notificationObject?.ImpactedEntities == null)
                 {
-                    log.Error("Missing ImpactedEntites");
-                    throw new Exception("Missing ImpactedEntities");
+                    log.Error("ProcessAlert: Missing ImpactedEntites in notification object");
+                    throw new Exception("ProcessAlert: Missing ImpactedEntities in notification object");
                 }
 
                 if (notificationObject?.State == null)
                 {
-                    log.Error("Missing State");
-                    throw new Exception("Missing State");
+                    log.Error("ProcessAlert: Missing State in notification object");
+                    throw new Exception("ProcessAlert: Missing State in notification object");
                 }
 
                 // this indicates a Dynatrace Test Message, we just return that everything is ok
                 var requestBody = await req.Content.ReadAsStringAsync();
                 if (requestBody.Contains("XXXXXXXXXXXXX"))
                 {
-                    log.Info("From Testing");
+                    log.Info("ProcessAlert: Found testing message");
                     return req.CreateResponse(HttpStatusCode.OK, "All good from test message");
                 }
 
@@ -67,11 +67,10 @@ namespace DynatraceSelfHealingFunction
                 string state = notificationObject?.State;
                 if (!state.Equals("OPEN"))
                 {
-                    log.Info("Nothing to do as problem status is " + state);
-                    return req.CreateResponse(HttpStatusCode.OK, "Nothing to do as problem status is " + state);
+                    log.Info("ProcessAlert: Nothing to do as problem status is " + state);
+                    return req.CreateResponse(HttpStatusCode.OK, "Nothing to do as problem status is not OPEN. Current status is: " + state);
                 }
 
-                // Process the dynatrace event
                 // get environmental variables
                 var dtApiToken = System.Environment.GetEnvironmentVariable("DT_API_TOKEN", EnvironmentVariableTarget.Process);
                 var dtTennantUrl = System.Environment.GetEnvironmentVariable("DT_TENANT_URL", EnvironmentVariableTarget.Process);
@@ -83,14 +82,22 @@ namespace DynatraceSelfHealingFunction
                 var messageBuilder = new StringBuilder();
 
                 // create log message
-                messageBuilder.AppendLine("Got environmental variables:");
-                messageBuilder.AppendLine("DT Api Token: " + dtApiToken);
-                messageBuilder.AppendLine("DT Tenant URL: " + dtTennantUrl);
-                messageBuilder.AppendLine("DT VSTS Url: " + dtVSTSUrl);
-                messageBuilder.AppendLine("DT VSTS PAT: " + dtVSTSPAT);
-                messageBuilder.AppendLine("DT Time Span Minutes: " + dtTimeSpanMinutes);
-                messageBuilder.AppendLine("DT VSTS Release API: " + dtVSTSReleaseApiUrl);
+                messageBuilder.AppendLine("ProcessAlert: Function application setting variables:");
+                messageBuilder.AppendLine("ProcessAlert: DT Api Token: " + dtApiToken);
+                messageBuilder.AppendLine("ProcessAlert: DT Tenant URL: " + dtTennantUrl);
+                messageBuilder.AppendLine("ProcessAlert: DT VSTS Url: " + dtVSTSUrl);
+                messageBuilder.AppendLine("ProcessAlert: DT VSTS PAT: " + dtVSTSPAT);
+                messageBuilder.AppendLine("ProcessAlert: DT Time Span Minutes: " + dtTimeSpanMinutes);
+                messageBuilder.AppendLine("ProcessAlert: DT VSTS Release API: " + dtVSTSReleaseApiUrl);
                 log.Info(messageBuilder.ToString());
+
+                if ((dtApiToken == null) || (dtApiToken == "")) { throw new Exception("DT_API_TOKEN environmental variables not defined"); }
+                if ((dtTennantUrl == null) || (dtTennantUrl == "")) { throw new Exception("DT_TENANT_URL environmental variables not defined"); }
+                if ((dtVSTSUrl == null) || (dtVSTSUrl == "")) { throw new Exception("DT_VSTSURL environmental variables not defined"); }
+                if ((dtVSTSPAT == null) || (dtVSTSPAT == "")) { throw new Exception("DT_VSTSPAT environmental variables not defined"); }
+                if ((dtVSTSReleaseApiUrl == null) || (dtVSTSReleaseApiUrl == "")) { throw new Exception("DT_VSTSRELEASEAPIURL environmental variables not defined"); }
+                if ((dtTimeSpanMinutes == null) || (dtTimeSpanMinutes == "")) { throw new Exception("DT_VSTSTIMESPANMINUTES environmental variables not defined"); }
+                if ((dtEnvironmentTag == null) || (dtEnvironmentTag == "")) { throw new Exception("DT_ENVIRONMENTTAG environmental variables not defined"); }
 
                 var alertProcessor = new DynatraceAlertProcessor
                 {
@@ -106,15 +113,15 @@ namespace DynatraceSelfHealingFunction
                     DTVSTSPAT = dtVSTSPAT
                 };
 
-                log.Info("Created alert processor, starting to process dynatrace alert.");
+                log.Info("ProcessAlert: Created alert processor, starting to process dynatrace alert.");
                 var returnMessage = await alertProcessor.ProcessDynatraceAlert();
-                log.Info("Finished processing dynatrace alert: " + returnMessage);
+                log.Info("ProcessAlert: Finished processing dynatrace alert: " + returnMessage);
                 return req.CreateResponse(HttpStatusCode.OK, returnMessage);
 
             }
             catch (Exception e)
             {
-                log.Error("Exception occured: " + e.Message + ":" + e.StackTrace);
+                log.Error("ProcessAlert: Exception occured: " + e.Message + ":" + e.StackTrace);
                 return req.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
