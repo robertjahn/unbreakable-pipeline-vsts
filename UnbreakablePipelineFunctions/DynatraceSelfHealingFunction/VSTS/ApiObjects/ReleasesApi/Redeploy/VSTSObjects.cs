@@ -500,7 +500,7 @@ namespace DynatraceSelfHealingFunction.VSTS.ApiObjects.Releases.Redeploy
         public DateTime startTime { get; set; }
         public DateTime finishTime { get; set; }
         public string status { get; set; }
-        public object rank { get; set; }
+        public int rank { get; set; }
         public object[] issues { get; set; }
     }
 

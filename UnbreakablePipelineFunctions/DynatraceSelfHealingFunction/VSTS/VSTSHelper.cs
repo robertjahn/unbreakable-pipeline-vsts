@@ -151,8 +151,11 @@ namespace DynatraceSelfHealingFunction.VSTS
 
             Log.Info("GetReleaseRootObject: before serialization");
             Log.Info("GetReleaseRootObject: body: " + body);
-        
-            var returnObj = JsonConvert.DeserializeObject<GetReleaseRootObject>(body);
+
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+
+            var returnObj = JsonConvert.DeserializeObject<GetReleaseRootObject>(body, settings);
             Log.Info("GetReleaseRootObject: after serialization");
 
             return returnObj;
