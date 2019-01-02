@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -20,6 +21,13 @@ namespace DynatraceSelfHealingFunction
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
+
+            // this is needed for testing outside a pipeline
+            if (req.GetConfiguration() == null)
+            {
+                var configuration = new HttpConfiguration();
+                req.SetConfiguration(configuration);
+            }
 
             // Get request body
             try

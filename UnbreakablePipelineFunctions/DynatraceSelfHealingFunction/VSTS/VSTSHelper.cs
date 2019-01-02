@@ -68,9 +68,11 @@ namespace DynatraceSelfHealingFunction.VSTS
                 // only look at previous releases
                 if (release.id < releaseId)
                 {
-                    Log.Info("This is a previous release, processing.");
                     // get the full release object so we can see if it successfuly deployed in the environment
+                    Log.Info("This is a previous release, processing release.id: " + release.id);
                     var theRelease = GetRelease(project, release.id);
+                    Log.Info("This is a previous release, processing theRelease: " + theRelease);
+
                     // check if it deployed successfully in the environment
                     if (theRelease.environments.Any(env => (env.name == environment) && (env.status.ToLower() == "succeeded")))
                     {
