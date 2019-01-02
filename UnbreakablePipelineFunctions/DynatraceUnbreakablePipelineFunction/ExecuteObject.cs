@@ -215,6 +215,7 @@ namespace DynatraceUnbreakablePipelineFunction
             {
                 logMessage = "ExecuteObject.Execute() exception: " + e.Message;
                 this.Log.Error(logMessage);
+                throw;
             }
 
             if (!success)
@@ -228,6 +229,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 {
                     logMessage = "ExecuteObject.Execute(): There was an exception calling gateHelper.FinishGate" + e2.Message + ": " + e2.StackTrace;
                     this.Log.Error(logMessage);
+                    throw;
                 }
             }
         }

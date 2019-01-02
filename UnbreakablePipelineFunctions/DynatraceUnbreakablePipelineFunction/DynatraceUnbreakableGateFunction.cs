@@ -52,6 +52,7 @@ namespace DynatraceUnbreakablePipelineFunction
                     log);
                 log.Info("DynatraceUnbreakableGateFunction: Parsed info from body of post and stored in executionObject");
 
+                /*
                 // async process gate
                 var executionThread = new Thread(new ThreadStart(executionObject.Execute));
                 log.Info("DynatraceUnbreakableGateFunction: Created Thread for processing");
@@ -59,6 +60,9 @@ namespace DynatraceUnbreakablePipelineFunction
                 executionThread.Name = "Execution Thread";
                 executionThread.Start();
                 log.Info("DynatraceUnbreakableGateFunction: Started Thread for processing");
+                */
+
+                executionObject.Execute();
 
                 // return back return object
                 return HttpRequestProxy.CreateResponse(req, HttpStatusCode.OK, "Started Async processing of monspec...", "application/json");

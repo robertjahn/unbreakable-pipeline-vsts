@@ -115,13 +115,13 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.Plan = this.TaskClient.GetPlanAsync(this.ProjectGuid, this.HubName, this.PlanGuid).SyncResult();
                 logMessage = "GateHelper.GetTaskClientPlan(): Got TaskClient.GetPlanAsync.SyncResult";
                 this.Log.Info(logMessage);
-                SendLiveLogMessage("LIVE: " + logMessage);
+                SendLiveLogMessage(logMessage);
             }
             catch (Exception e)
             {
                 logMessage = "GateHelper.GetTaskClientPlan(): Failed to get GetTaskClientPlan: " + e.Message;
                 this.Log.Error(logMessage);
-                SendLiveLogMessage("LIVE: " + logMessage);
+                SendLiveLogMessage(logMessage);
                 throw;
             }
         }
@@ -137,13 +137,13 @@ namespace DynatraceUnbreakablePipelineFunction
                     .First();
                 logMessage = "GateHelper.GetTaskTimelineRecord(): Got TimelineRecord.Id: " + this.TimelineRecord.Id;
                 this.Log.Info(logMessage);
-                SendLiveLogMessage("LIVE: " + logMessage);
+                SendLiveLogMessage(logMessage);
             }
             catch (Exception e)
             {
                 logMessage = "GateHelper.GetTaskTimelineRecord(): Failed to get TaskClient.GetRecordsAsync.SyncResult.First: " + e.Message;
                 this.Log.Error(logMessage);
-                SendLiveLogMessage("LIVE: " + logMessage);
+                SendLiveLogMessage(logMessage);
                 throw;
             }
 
@@ -151,6 +151,7 @@ namespace DynatraceUnbreakablePipelineFunction
 
         public void SendLiveLogMessage(string message)
         {
+            message += "LIVE: " + message;
             var liveFeedList = new List<string> { message };
             if (this.TaskClient != null)
             {
@@ -233,8 +234,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
 
-                //taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
-                taskCompletedEvent = new TaskCompletedEvent(jobId, Guid.Empty, taskResult);
+                taskCompletedEvent = new TaskCompletedEvent(this.TaskInstanceGuid, Guid.Empty, taskResult);
 
             }
             catch (Exception e)
@@ -242,6 +242,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 logMessage = "GateHelper.FinishGate(): Exception creating TaskCompletedEvent: " + e.Message;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
+                throw;
             }
 
             try
@@ -261,6 +262,7 @@ namespace DynatraceUnbreakablePipelineFunction
                 logMessage = "GateHelper.FinishGate(): Exception calling TaskClient.RaisePlanEventAsync: " + e.Message;
                 this.Log.Info(logMessage);
                 SendLiveLogMessage(logMessage);
+                throw;
             }   
         }
     }
