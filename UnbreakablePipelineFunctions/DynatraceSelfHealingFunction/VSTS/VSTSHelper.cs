@@ -95,6 +95,8 @@ namespace DynatraceSelfHealingFunction.VSTS
         private RedeployRootObject Redeploy(string project, int releaseId, int environmentId)
         {
             var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/Release/releases/" + releaseId + "/environments/" + environmentId;
+            Log.Info("RedeployRootObject: apiUrl: " + apiUrl);
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
 
             request.KeepAlive = true;
@@ -137,6 +139,8 @@ namespace DynatraceSelfHealingFunction.VSTS
         private GetReleaseRootObject GetRelease(string project, int releaseId)
         {
             var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/release/releases/" + releaseId + "?api-version=4.1-preview.6";
+
+            Log.Info("GetReleaseRootObject: apiUrl: " + apiUrl);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
             request.UserAgent = "DynatraceSelfHealingFunction";
             request.Headers.Set(HttpRequestHeader.Authorization, GetHeaderAuthorization());
@@ -153,6 +157,8 @@ namespace DynatraceSelfHealingFunction.VSTS
         {
             //var theUrl = "https://msvstsdemo-a.vsrm.visualstudio.com/AbelUnbreakablePipelineDemo/_apis/release/releases?api-version=4.1-preview.6&definitionId=1";
             var apiUrl = this.VSTSReleaseApiUrl + "/" + project + "/_apis/release/releases?api-version=4.1-preview.6&definitionId=" + releaseDefinitionId;
+            Log.Info("ListReleasesRootobject: apiUrl: " + apiUrl);
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
             request.UserAgent = "DynatraceSelfHealingFunction";
             request.Headers.Set(HttpRequestHeader.Authorization, GetHeaderAuthorization());
