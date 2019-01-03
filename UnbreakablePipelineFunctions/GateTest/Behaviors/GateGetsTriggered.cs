@@ -186,8 +186,10 @@ namespace GateTest.Behaviors
                 var theDynatraceToken = string.Empty;
                 var theProxyUrl = string.Empty;
                 var theServiceToCompare = string.Empty;
+                var theCompareShift = string.Empty;
+                var theCompareType = string.Empty;
 
-                ShimExecuteObject.ConstructorStringStringStringStringStringStringStringStringStringStringStringStringStringStringStringTraceWriter = (
+                ShimExecuteObject.ConstructorStringStringStringStringStringStringStringStringStringStringStringStringStringStringStringStringStringTraceWriter = (
                     self,
                     hubName,
                     jobId,
@@ -204,6 +206,8 @@ namespace GateTest.Behaviors
                     dynatraceToken,
                     proxyUrl,
                     serviceToCompare,
+                    compareShift,
+                    compareType,
                     log) =>
                 {
                     theHubName = hubName;
@@ -221,6 +225,8 @@ namespace GateTest.Behaviors
                     theDynatraceToken = dynatraceToken;
                     theProxyUrl = proxyUrl;
                     theServiceToCompare = serviceToCompare;
+                    theCompareShift = compareShift;
+                    theCompareType = compareType;
                 };
 
                 #endregion

@@ -10,9 +10,6 @@ namespace DynatraceUnbreakablePipelineFunction
 {
     public class ExecuteObject
     {
-        //public readonly static string HUBNAME = "Gates";
-        //public readonly static string HUBNAME = "Release";
-
         public string MonspecUrl { get; set; }
         public string PipelineInfoUrl { get; set; }
         public string DynatraceTennantUrl { get; set; }
@@ -20,7 +17,6 @@ namespace DynatraceUnbreakablePipelineFunction
         public string ProxyUrl { get; set; }
         public string ServiceToCompare { get; set; }
         public string CompareWindow { get; set; }
-
         public string TaskInstanceId { get; set; }
         public string HubName { get; set; }
         public string JobId { get; set; }
@@ -29,8 +25,9 @@ namespace DynatraceUnbreakablePipelineFunction
         public string ProjectId { get; set; }
         public string VstsUrl { get; set; }
         public string AuthToken { get; set; }
-
         public TraceWriter Log { get; set; }
+        public string compareShift { get; set; }
+        public string compareType { get; set; } 
 
         public ExecuteObject() { }
 
@@ -50,6 +47,8 @@ namespace DynatraceUnbreakablePipelineFunction
             string dynatraceToken,
             string proxyUrl,
             string serviceToCompare,
+            string compareShift,
+            string compareType,
             TraceWriter log)
         {
             log.Info("ExecuteObject initialize: Start");
@@ -61,6 +60,8 @@ namespace DynatraceUnbreakablePipelineFunction
             this.ProxyUrl = proxyUrl;
             this.ServiceToCompare = serviceToCompare;
             this.CompareWindow = compareWindow;
+            this.compareShift = compareShift;
+            this.compareType = compareType;
 
             this.TaskInstanceId = taskInstanceId;
             this.JobId = jobId;
@@ -97,24 +98,45 @@ namespace DynatraceUnbreakablePipelineFunction
                 pipelineInfoString = Encoding.Default.GetString(pipelineInfoByteArray);
             }
 
-            // make web api call to proxy 
-            this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to ProxyUrl: " + this.ProxyUrl);
+            // make web api call to proxy - default to pullcompare
             var req = WebRequest.Create(this.ProxyUrl);
             var postDataBuilder = new StringBuilder();
-            postDataBuilder.Append("serviceToCompare=");
-            postDataBuilder.Append(this.ServiceToCompare);
-            postDataBuilder.Append("&compareWindow=");
-            postDataBuilder.Append(this.CompareWindow);
-            postDataBuilder.Append("&dynatraceTennantUrl=");
-            postDataBuilder.Append(this.DynatraceTennantUrl);
-            postDataBuilder.Append("&token=");
-            postDataBuilder.Append(this.DynatraceToken);
-            postDataBuilder.Append("&monspecFile=");
-            postDataBuilder.Append(monspecString);
-            postDataBuilder.Append("&pipelineInfoFile=");
-            postDataBuilder.Append(pipelineInfoString);
+            if (compareType == "pull")
+            {
+                this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to compareType: PULL, ProxyUrl: " + this.ProxyUrl);
+                postDataBuilder.Append("serviceToPull=");
+                postDataBuilder.Append(this.ServiceToCompare);
+                postDataBuilder.Append("&compareWindow=");
+                postDataBuilder.Append(this.CompareWindow);
+                postDataBuilder.Append("&compareShift=");
+                postDataBuilder.Append(this.compareShift);
+                postDataBuilder.Append("&dynatraceTennantUrl=");
+                postDataBuilder.Append(this.DynatraceTennantUrl);
+                postDataBuilder.Append("&token=");
+                postDataBuilder.Append(this.DynatraceToken);
+                postDataBuilder.Append("&monspecFile=");
+                postDataBuilder.Append(monspecString);
+                postDataBuilder.Append("&pipelineInfoFile=");
+                postDataBuilder.Append(pipelineInfoString);
+            }
+            else
+            {
+                this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to compareType: PULLCOMPARE, ProxyUrl: " + this.ProxyUrl);
+                postDataBuilder.Append("serviceToCompare=");
+                postDataBuilder.Append(this.ServiceToCompare);
+                postDataBuilder.Append("&compareWindow=");
+                postDataBuilder.Append(this.CompareWindow);
+                postDataBuilder.Append("&dynatraceTennantUrl=");
+                postDataBuilder.Append(this.DynatraceTennantUrl);
+                postDataBuilder.Append("&token=");
+                postDataBuilder.Append(this.DynatraceToken);
+                postDataBuilder.Append("&monspecFile=");
+                postDataBuilder.Append(monspecString);
+                postDataBuilder.Append("&pipelineInfoFile=");
+                postDataBuilder.Append(pipelineInfoString);
+ 
+            }
             string postData = postDataBuilder.ToString();
-
             byte[] send = Encoding.Default.GetBytes(postData);
             req.Method = "POST";
             req.ContentType = "application/x-www-form-urlencoded";

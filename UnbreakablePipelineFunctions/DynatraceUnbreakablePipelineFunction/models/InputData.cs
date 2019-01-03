@@ -53,5 +53,8 @@ namespace DynatraceUnbreakablePipelineFunction
 
         [JsonProperty(Required = Required.Always)]
         public string compareWindow { get; set; }
+
+        public string compareShift { get; set; }
+        public string compareType { get; set; }
     }
 }

@@ -31,8 +31,8 @@ namespace DynatraceUnbreakablePipelineFunction
             {
                 var contentString = await req.Content.ReadAsStringAsync();
                 var input = JsonConvert.DeserializeObject<InputData>(contentString);
-                log.Info("DynatraceUnbreakableGateFunction: Read info from body of post");
 
+                log.Info("DynatraceUnbreakableGateFunction: Read info from body of post");
                 var executionObject = new ExecuteObject(
                     input.hubName,
                     input.jobId,
@@ -49,6 +49,8 @@ namespace DynatraceUnbreakablePipelineFunction
                     input.dynatraceToken,
                     input.proxyUrl,
                     input.serviceToCompare,
+                    input.compareShift,
+                    input.compareType,
                     log);
                 log.Info("DynatraceUnbreakableGateFunction: Parsed info from body of post and stored in executionObject");
 
