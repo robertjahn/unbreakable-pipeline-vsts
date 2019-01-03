@@ -152,7 +152,7 @@ namespace DynatraceSelfHealingFunction
             this.Log.Info("getMostRecentDeploymentOnEntity: Start");
             List<dynamic> resultEvents = new List<dynamic>();
 
-            this.Log.Info("getMostRecentDeploymentOnEntity: Iterating through " + entities.Length + " entities");
+            this.Log.Info("getMostRecentDeploymentOnEntity: Iterating through " + entities.Count + " entities");
             foreach (var entity in entities)
             {
                 this.Log.Info("getMostRecentDeploymentOnEntity: processing Entity: " + entity);
@@ -183,9 +183,9 @@ namespace DynatraceSelfHealingFunction
                     //var events = data?.events;
 
                     // only look at most recent one that came from VSTS, once you find the first one, break out of for loop
-                    if (events.Length > 0)
+                    if (events.Count > 0)
                     {
-                        this.Log.Info("getMostRecentDeploymentOnEntity: Iterating through " + events.Length + " events, find first one from VSTS");
+                        this.Log.Info("getMostRecentDeploymentOnEntity: Iterating through " + events.Count + " events, find first one from VSTS");
                         Boolean foundEvent = false;
                         foreach (var problemEvent in events)
                         {
