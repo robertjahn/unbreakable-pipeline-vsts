@@ -140,6 +140,7 @@ namespace DynatraceSelfHealingFunction
                 {
                     this.Log.Info("getEnvironmentTagValue: Loop found key: " + problemTag.key.Value + " value: " + problemTag.value.Value);
                     environmentTagValue = problemTag.value.Value;
+                    break;
                 }
             }
             this.Log.Info("getEnvironmentTagValue: Returning environmentTagValue: " + environmentTagValue);

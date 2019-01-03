@@ -155,9 +155,9 @@ namespace DynatraceUnbreakablePipelineFunction
             var liveFeedList = new List<string> { message };
             if (this.TaskClient != null)
             {
-                this.Log.Info("GateHelper.SendLiveLogMessage(): Start");
+                //this.Log.Info("GateHelper.SendLiveLogMessage(): Start");
                 this.TaskClient.AppendTimelineRecordFeedAsync(this.ProjectGuid, this.HubName, this.PlanGuid, this.Plan.Timeline.Id, this.JobGuid, liveFeedList);
-                this.Log.Info("GateHelper.SendLiveLogMessage(): Complete");
+                //this.Log.Info("GateHelper.SendLiveLogMessage(): Complete");
             }
             else
             {

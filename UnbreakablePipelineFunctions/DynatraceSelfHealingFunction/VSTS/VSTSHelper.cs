@@ -43,7 +43,8 @@ namespace DynatraceSelfHealingFunction.VSTS
             var previousSuccessfulRelease = GetPreviousSuccessfulRelease(project, releases.value, releaseId, environment);
 
             // redploy to environment
-            var environmentId = previousSuccessfulRelease.environments.First(env => env.name == environment).id;
+            var environmentId = previousSuccessfulRelease.environments.First(env => env.name.Equals(environment,StringComparison.InvariantCultureIgnoreCase)).id;
+
             Log.Info("ReleaseProblemDetected: calling Redeploy() with previousSuccessfulRelease.id: " + previousSuccessfulRelease.id);
             var redployResponseObj = Redeploy(project, previousSuccessfulRelease.id, environmentId);
             Log.Info("ReleaseProblemDetected: Redeploy() returned: " + redployResponseObj);
@@ -74,7 +75,7 @@ namespace DynatraceSelfHealingFunction.VSTS
                     Log.Info("GetPreviousSuccessfulRelease: This is a previous release, found theRelease: " + theRelease.ToString());
 
                     // check if it deployed successfully in the environment
-                    if (theRelease.environments.Any(env => (env.name == environment) && (env.status.ToLower() == "succeeded")))
+                    if (theRelease.environments.Any(env => (env.name.Equals(environment, StringComparison.InvariantCultureIgnoreCase)) && (env.status.Equals("succeeded", StringComparison.InvariantCultureIgnoreCase))))
                     {
                         Log.Info("GetPreviousSuccessfulRelease: In this release, found environment: " + environment + " and status succeeded");
                         returnObj = theRelease;

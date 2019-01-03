@@ -98,11 +98,14 @@ namespace DynatraceUnbreakablePipelineFunction
                 pipelineInfoString = Encoding.Default.GetString(pipelineInfoByteArray);
             }
 
+            // add a backslash if not provided in the argument
+            if (this.ProxyUrl.Substring(this.ProxyUrl.Length - 1 , 1) == "/") { this.ProxyUrl += "/"; }
+
             // make web api call to proxy - default to pullcompare
-            var req = WebRequest.Create(this.ProxyUrl);
             var postDataBuilder = new StringBuilder();
             if (compareType == "pull")
             {
+                this.ProxyUrl += "api/DTCLIProxy/MonspecPullRequest";
                 this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to compareType: PULL, ProxyUrl: " + this.ProxyUrl);
                 postDataBuilder.Append("serviceToPull=");
                 postDataBuilder.Append(this.ServiceToCompare);
@@ -121,6 +124,7 @@ namespace DynatraceUnbreakablePipelineFunction
             }
             else
             {
+                this.ProxyUrl += "api/DTCLIProxy/MonspecPullCompareRequest";
                 this.Log.Info("MonspecPullRequestReturnString: Composing Monspec request to compareType: PULLCOMPARE, ProxyUrl: " + this.ProxyUrl);
                 postDataBuilder.Append("serviceToCompare=");
                 postDataBuilder.Append(this.ServiceToCompare);
@@ -136,6 +140,8 @@ namespace DynatraceUnbreakablePipelineFunction
                 postDataBuilder.Append(pipelineInfoString);
  
             }
+
+            var req = WebRequest.Create(this.ProxyUrl);
             string postData = postDataBuilder.ToString();
             byte[] send = Encoding.Default.GetBytes(postData);
             req.Method = "POST";

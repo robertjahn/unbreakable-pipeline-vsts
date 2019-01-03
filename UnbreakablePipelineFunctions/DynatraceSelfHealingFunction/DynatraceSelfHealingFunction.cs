@@ -56,11 +56,10 @@ namespace DynatraceSelfHealingFunction
                 }
 
                 // this indicates a Dynatrace Test Message, we just return that everything is ok
-                var requestBody = await req.Content.ReadAsStringAsync();
-                if (requestBody.Contains("XXXXXXXXXXXXX"))
+                if (notificationObject?.ProblemTitle == "Dynatrace problem notification test run" )
                 {
-                    log.Info("ProcessAlert: Found testing message");
-                    return req.CreateResponse(HttpStatusCode.OK, "All good from test message");
+                    log.Info("ProcessAlert: Found Dynatrace testing message");
+                    return req.CreateResponse(HttpStatusCode.OK, "All good from Dynatrace test message");
                 }
 
                 // we only do a rollback in case a new problem opens up. any other state, e.g: RESOLVED, MERGED doesnt require any action
