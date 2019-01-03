@@ -82,7 +82,7 @@ namespace DynatraceSelfHealingFunction.VSTS
                     }
                     else
                     {
-                        throw new Exception("GetPreviousSuccessfulRelease: Aborting. Release did not have successful environment: " + JsonConvert.SerializeObject(theRelease));
+                        Log.Info("GetPreviousSuccessfulRelease: Aborting. Release did not have successful environment for theRelease: " + JsonConvert.SerializeObject(theRelease));
                     }
                 }
                 else
