@@ -46,7 +46,7 @@ namespace DynatraceSelfHealingFunction
                     // create comment body
                     var commentBody = new FixedEventComment
                     {
-                        comment = "Triggered release " + fixedEvent.OrigEvent?.deploymentName.Value + " " + fixedEvent.RollbackReleaseId + " in project " + fixedEvent.OrigEvent?.deploymentProject.Value,
+                        comment = "Triggered release deploymentName: " + fixedEvent.OrigEvent?.deploymentName.Value + " RollbackReleaseId: " + fixedEvent.RollbackReleaseId + " in project " + fixedEvent.OrigEvent?.deploymentProject.Value,
                         user = "Dynatrace Self healing Function Remediation Action",
                         context = "Azure Function"
                     };

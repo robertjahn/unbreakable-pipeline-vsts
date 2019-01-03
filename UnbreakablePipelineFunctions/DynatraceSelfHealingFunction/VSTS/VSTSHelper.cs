@@ -132,6 +132,8 @@ namespace DynatraceSelfHealingFunction.VSTS
                 var reader = new StreamReader(responseStream);
                 var responseBody = reader.ReadToEnd();
 
+                Log.Info("RedeployRootObject: responseBody: " + responseBody.ToString());
+
                 var returnObj = JsonConvert.DeserializeObject<RedeployRootObject>(responseBody);
                 return returnObj;
             }
