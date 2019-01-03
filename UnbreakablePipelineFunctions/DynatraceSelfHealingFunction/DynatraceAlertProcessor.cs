@@ -163,14 +163,14 @@ namespace DynatraceSelfHealingFunction
                 var dtEventUrl = this.DTTenantUrl + "/api/v1/events";
                 var to = DateTime.Now;
                 var from = to.Subtract(new TimeSpan(0, 0, 0, 0, timespan));
-                var queryString = "?entitydId=" + entity?.entity + "&eventType=CUSTOM_DEPLOYMENT";
+                var queryString = "?entityId=" + entity?.entity + "&eventType=CUSTOM_DEPLOYMENT";
                 if (timespan > 0)
                 {
                     queryString += "&to=" + DynatraceAPIHelper.ConvertToJSSMilliseconds(to) + "&from=" + DynatraceAPIHelper.ConvertToJSSMilliseconds(from);
                 }
 
                 // execute query to dynatrace
-                this.Log.Info("getMostRecentDeploymentOnEntity: Executing query to Dynatrace: " + queryString);
+                this.Log.Info("getMostRecentDeploymentOnEntity: Executing query to Dynatrace: " + dtEventUrl + queryString);
                 HttpResponseMessage response = await DynatraceAPIHelper.Post(dtEventUrl + queryString, this.DTApiToken, null);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

@@ -71,7 +71,7 @@ namespace DynatraceSelfHealingFunction.VSTS
                     // get the full release object so we can see if it successfuly deployed in the environment
                     Log.Info("GetPreviousSuccessfulRelease: This is a previous release, processing release.id: " + release.id);
                     var theRelease = GetRelease(project, release.id);
-                    Log.Info("GetPreviousSuccessfulRelease: This is a previous release, found theRelease: " + theRelease);
+                    Log.Info("GetPreviousSuccessfulRelease: This is a previous release, found theRelease: " + theRelease.ToString());
 
                     // check if it deployed successfully in the environment
                     if (theRelease.environments.Any(env => (env.name == environment) && (env.status.ToLower() == "succeeded")))
@@ -82,7 +82,7 @@ namespace DynatraceSelfHealingFunction.VSTS
                     }
                     else
                     {
-                        Log.Info("GetPreviousSuccessfulRelease: Aborting. Release did not have successful environment for theRelease: " + JsonConvert.SerializeObject(theRelease));
+                        Log.Info("GetPreviousSuccessfulRelease: Aborting. Release did not contain status succeded for environment: " + environment);
                     }
                 }
                 else
@@ -159,7 +159,7 @@ namespace DynatraceSelfHealingFunction.VSTS
                 var body = reader.ReadToEnd();
 
                 Log.Info("GetRelease: before serialization");
-                Log.Info("GetRelease: body: " + body);
+                Log.Info("GetRelease: got body: " + body);
 
                 JsonSerializerSettings settings = new JsonSerializerSettings();
                 settings.NullValueHandling = NullValueHandling.Ignore;
