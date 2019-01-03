@@ -65,7 +65,6 @@ namespace DynatraceSelfHealingFunction.VSTS
             foreach (var release in releasesReverseOrdered)
             {
                 Log.Info("GetPreviousSuccessfulRelease: processing release: " + release.id);
-
                 // only look at previous releases
                 if (release.id < releaseId)
                 {
@@ -83,12 +82,12 @@ namespace DynatraceSelfHealingFunction.VSTS
                     }
                     else
                     {
-                        throw new Exception("GetPreviousSuccessfulRelease: Release did not have successful environment: " + JsonConvert.SerializeObject(theRelease));
+                        throw new Exception("GetPreviousSuccessfulRelease: Aborting. Release did not have successful environment: " + JsonConvert.SerializeObject(theRelease));
                     }
                 }
                 else
                 {
-                    throw new Exception("GetPreviousSuccessfulRelease: There is no previous release, ignoring.");
+                    Log.Info("GetPreviousSuccessfulRelease: Skipping. release.id: " + release.id + " not less than releaseId:" + releaseId);
                 }
             }
             return returnObj;

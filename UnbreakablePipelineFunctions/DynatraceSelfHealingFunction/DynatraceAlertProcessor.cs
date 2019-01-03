@@ -109,6 +109,9 @@ namespace DynatraceSelfHealingFunction
                     var environment = getEnvironmentTagValue(deployEvent);
 
                     this.Log.Info("fixMostRecentDeploymentsOnEntities: Rolling back release from VSTS");
+                    this.Log.Info("fixMostRecentDeploymentsOnEntities: releaseId: " + releaseId);
+                    this.Log.Info("fixMostRecentDeploymentsOnEntities: vstsTeamProject: " + vstsTeamProject);
+                    this.Log.Info("fixMostRecentDeploymentsOnEntities: environment: " + environment);
                     var rollbackId = vstsHelper.ReleaseProblemDetected(vstsTeamProject, releaseId, environment);
                     returnArray.Add(new FixedEvent
                     {
