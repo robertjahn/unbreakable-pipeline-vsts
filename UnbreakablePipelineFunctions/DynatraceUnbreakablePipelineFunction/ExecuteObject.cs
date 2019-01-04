@@ -99,7 +99,7 @@ namespace DynatraceUnbreakablePipelineFunction
             }
 
             // add a backslash if not provided in the argument
-            if (this.ProxyUrl.Substring(this.ProxyUrl.Length - 1 , 1) == "/") { this.ProxyUrl += "/"; }
+            if (this.ProxyUrl.Substring(this.ProxyUrl.Length - 1 , 1) != "/") { this.ProxyUrl += "/"; }
 
             // make web api call to proxy - default to pullcompare
             var postDataBuilder = new StringBuilder();
