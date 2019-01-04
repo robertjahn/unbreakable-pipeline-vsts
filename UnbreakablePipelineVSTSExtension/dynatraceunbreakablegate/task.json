@@ -1,14 +1,14 @@
 {
-  "id": "3950d550-9283-11e8-bc67-3dfa2c0696c1",
+  "id": "3042a44f-74b3-4217-afe4-8d7cd02c3644",
   "name": "dynatraceunbreakablegate",
-  "friendlyName": "Dynatrace Unbreakable Release Gate",
+  "friendlyName": "1.1.11 Dynatrace Unbreakable Release Gate",
   "description": "Uses Dynatrace monitoring to determine if gate should pass or fail.",
   "author": "Abel Wang",
   "helpMarkDown": "Replace with markdown to show in help",
   "category": "Utility",
   "visibility": [
-      "Build",
-      "Release"
+    "Build",
+    "Release"
   ],
   "runsOn": [
     "ServerGate"
@@ -22,18 +22,18 @@
   "instanceNameFormat": "Dynatrace Unbreakable Pipeline Release Gate $(message)",
   "inputs": [
     {
-      "name": "UnbreakableGateFunctionUrl",
+      "name": "unbreakableGateFunctionUrl",
       "type": "string",
       "label": "Unbreakable Gate Function Url",
-      "defaultValue": "",
+      "defaultValue": "$(unbreakableGateFunctionUrl)",
       "required": true,
       "helpMarkDown": "URL to Azure Function hosting Dynatrace Unbreakable Gate"
     },
     {
-      "name": "UnbreakableGateFunctionKey",
+      "name": "unbreakableGateFunctionKey",
       "type": "string",
       "label": "Unbreakable Gate Function Key",
-      "defaultValue": "",
+      "defaultValue": "$(unbreakableGateFunctionKey)",
       "required": true,
       "helpMarkDown": "Secret Key to Azure Function hosting Dynatrace Unbreakable Gate"
     },
@@ -41,7 +41,7 @@
       "name": "monspecUrl",
       "type": "string",
       "label": "Monspec Url",
-      "defaultValue": "",
+      "defaultValue": "$(monspecUrl)",
       "required": true,
       "helpMarkDown": "Url to the Dyntrace Monspec file."
     },
@@ -49,49 +49,68 @@
       "name": "pipelineInfoUrl",
       "type": "string",
       "label": "Pipeline Info Url",
-      "defaultValue": "",
+      "defaultValue": "$(pipelineInfoUrl)",
       "required": true,
       "helpMarkDown": "Url to the pipeline info file."
     },
     {
-      "name": "dynatraceTennantUrl",
+      "name": "dynatraceTenantUrl",
       "type": "string",
       "label": "Dynatrace Tenant Url",
-      "defaultValue": "",
+      "defaultValue": "$(dynatraceTenantUrl)",
       "required": true,
       "helpMarkDown": "Url to the Dynatrace Tenant."
     },
     {
-      "name": "dynatraceToken",
+      "name": "dynatraceApiToken",
       "type": "string",
-      "label": "Dynatrace Token",
-      "defaultValue": "",
+      "label": "Dynatrace API Token",
+      "defaultValue": "$(dynatraceApiToken)",
       "required": true,
-      "helpMarkDown": "Authentication token for your Dynatrace Tenant."
+      "helpMarkDown": "API token for your Dynatrace Tenant."
     },
     {
-      "name": "proxyUrl",
+      "name": "dynatraceProxyUrl",
       "type": "string",
       "label": "Dynatrace Proxy Url",
-      "defaultValue": "",
+      "defaultValue": "$(dynatraceProxyUrl)",
       "required": true,
       "helpMarkDown": "URL to the Dynatrace monspec proxy."
     },
     {
       "name": "serviceToCompare",
       "type": "string",
-      "label": "Service To Compare",
-      "defaultValue": "",
+      "label": "Service To Compare or Pull",
+      "defaultValue": "$(serviceToCompare)",
       "required": true,
       "helpMarkDown": "The Service To Compare for the Dynatrace Unbreakable Gate."
+    },
+    {
+      "name": "compareType",
+      "type": "pickList",
+      "label": "MonSpec Compare Type",
+      "defaultValue": "pullcompare",
+      "required": true,
+      "helpMarkDown": "Valid values are pullcompare or pull.",
+      "options": {
+        "pullcompare": "pullcompare",
+        "pull": "pull"
+      }
     },
     {
       "name": "compareWindow",
       "type": "string",
       "label": "Compare Window",
-      "defaultValue": "5",
+      "defaultValue": "$(compareWindow)",
       "required": true,
       "helpMarkDown": "The number of minutes to compare."
+    },
+    {
+      "name": "compareShift",
+      "type": "string",
+      "label": "Compare Time Shift",
+      "defaultValue": "$(compareShift)",
+      "helpMarkDown": "Used for comparetype=pull only. The number of minutes to shift relative to now."
     },
     {
       "name": "PlanUrl",
@@ -99,7 +118,7 @@
       "label": "VSTS Plan Url",
       "defaultValue": "$(system.CollectionUri)",
       "required": true,
-      "helpMarkDown": "Url the the VSTS collection plan."
+      "helpMarkDown": "Url the the VSTS collection plan (e.g. https://vsrm.dev.azure.com/robjahn/)."
     },
     {
       "name": "ProjectId",
@@ -162,9 +181,9 @@
     "HttpRequest": {
       "Execute": {
         "endpointId": "",
-        "endpointUrl": "$(UnbreakableGateFunctionUrl)?code=$(UnbreakableGateFunctionKey)",
+        "endpointUrl": "$(unbreakableGateFunctionUrl)?code=$(unbreakableGateFunctionKey)",
         "method": "POST",
-        "body": "{ \"Content-Type\":\"application/json\", \"PlanUrl\": \"$(PlanUrl)\", \"ProjectId\": \"$(ProjectId)\", \"HubName\": \"$(HubName)\", \"PlanId\": \"$(PlanId)\", \"JobId\": \"$(JobId)\", \"TimelineId\": \"$(TimelineId)\", \"TaskInstanceId\": \"$(TaskInstanceId)\", \"AuthToken\": \"$(AuthToken)\", \"monspecUrl\": \"$(monspecUrl)\", \"pipelineInfoUrl\": \"$(pipelineInfoUrl)\", \"dynatraceTennantUrl\": \"$(dynatraceTennantUrl)\", \"dynatraceToken\": \"$(dynatraceToken)\", \"proxyUrl\": \"$(proxyUrl)\", \"serviceToCompare\":\"$(serviceToCompare)\", \"compareWindow\": \"$(compareWindow)\" }",
+        "body": "{ \"Content-Type\":\"application/json\", \"PlanUrl\": \"$(PlanUrl)\", \"ProjectId\": \"$(ProjectId)\", \"HubName\": \"$(HubName)\", \"PlanId\": \"$(PlanId)\", \"JobId\": \"$(JobId)\", \"TimelineId\": \"$(TimelineId)\", \"TaskInstanceId\": \"$(TaskInstanceId)\", \"AuthToken\": \"$(AuthToken)\", \"monspecUrl\": \"$(monspecUrl)\", \"pipelineInfoUrl\": \"$(pipelineInfoUrl)\", \"dynatraceTennantUrl\": \"$(dynatraceTenantUrl)\", \"dynatraceToken\": \"$(dynatraceApiToken)\", \"proxyUrl\": \"$(dynatraceProxyUrl)\", \"serviceToCompare\":\"$(serviceToCompare)\", \"compareWindow\": \"$(compareWindow)\", \"compareShift\": \"$(compareShift)\", \"compareType\": \"$(compareType)\" }",
         "headers": "{ \"Content-Type\":\"application/json\"  }",
         "WaitForCompletion": true,
         "Expression": ""

@@ -22,7 +22,7 @@ Need to make this into a container. Would be super cool to have this deployed in
 ## Dynatrace Unbreakable Pipeline Release Gate
 Installing the extension adds the following 'Dynatrace Unbreakable Pipeline Release Gate'.
 
-![](2018-07-29-16-25-45.png)
+![](gate.png)
 
 ### Input parameters
 The gate requires the following 9 inputs:
@@ -52,7 +52,7 @@ The gate also requres the following 8 VSTS parameters that are defaulted with th
 
 This extension also comes with a build and release task which sends a Deployment Event to your dynatrace tenant. This task should be called after deploying to an environment. This deployment event is used by Dynatrace in the self healing use case.
 
-![](2018-07-29-16-30-11.png)
+![](deployment.png)
 
 ### Input parameters
 
@@ -71,3 +71,19 @@ Sending a deployment event to dynatrace requires the following parameters
 - VSTS Url: The url to VSTS
 - Release Url: The url to the release in VSTS
 - Git Commit: The commit ID which triggered the release
+
+
+# Developer Notes
+
+development requires node and this node package ```npm install -g tfx-cli```
+
+optional use the ```build_extension.bat``` to make the vsix file
+
+
+### Reference 
+
+* task schema - https://github.com/Microsoft/azure-pipelines-task-lib/blob/master/tasks.schema.json
+* Developer Guide - https://docs.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?view=vsts
+* manifest reference - https://docs.microsoft.com/en-us/azure/devops/extend/develop/manifest?view=vsts
+* getting started guide - https://docs.microsoft.com/en-us/azure/devops/extend/get-started/node?view=vsts
+* GUID generator - https://www.guidgen.com/

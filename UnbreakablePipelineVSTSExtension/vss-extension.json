@@ -1,46 +1,49 @@
 {
-	"manifestVersion": 1,
-	"id": "DynatraceUnbreakablePipeline",
-	"version": "1.0.50",
-	"name": "Dynatrace Unbreakable Pipeline VSTS Extension",
-	"description": "A VSTS Extension to enable the unbreakable Dynatrace pipeline",
-	"publisher": "abelwang",
-	"targets": [
-		{
-			"id": "Microsoft.VisualStudio.Services"
-			}
-		],
-	"icons": {
-        "default": "/images/squid-head-small.png"
-	 },
-	"contributions": [
-		{
-			"id": "PushDeploymentEventTask",
-			"type": "ms.vss-distributed-task.task",
-			"targets": [
-				"ms.vss-distributed-task.tasks"
-			],
-			"properties": {
-				"name": "pushdeploymenteventtask"
-			}
-		},
-		{
-			"id": "DynatraceUnbreakableGate",
-			"type": "ms.vss-distributed-task.task",
-			"targets": [
-				"ms.vss-distributed-task.tasks"
-			],
-			"properties": {
-				"name": "dynatraceunbreakablegate"
-			}
-		}
-	],
-	"files":[
-		{
-			"path": "pushdeploymenteventtask"
-		},
-		{
-			"path": "dynatraceunbreakablegate"
-		}
-	]
+  "manifestVersion": 1,
+  "id": "DynatraceUnbreakablePipeline",
+  "version": "1.1.11",
+  "name": "1.1.11 Dynatrace Unbreakable Pipeline VSTS Extension",
+  "description": "A VSTS Extension to enable the unbreakable Dynatrace pipeline",
+  "publisher": "RobJahn",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "icons": {
+    "default": "kid.png"
+  },
+  "contributions": [
+    {
+      "id": "PushDeploymentEventTask",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "pushdeploymenteventtask"
+      }
+    },
+    {
+      "id": "DynatraceUnbreakableGate",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "dynatraceunbreakablegate"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "pushdeploymenteventtask"
+    },
+    {
+      "path": "dynatraceunbreakablegate"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 {
-  "id": "bf193850-9137-11e8-be30-db4e5bcd7ef2",
+  "id": "ba26bf93-f441-4451-b6cb-f77c4e589f87",
   "name": "DynatracePushDeploymentEvent",
-  "friendlyName": "Dynatrace Push Deployment Event",
+  "friendlyName": "1.1.11 Dynatrace Push Deployment Event",
   "description": "This build and release task sends a deployment event to Dynatrace",
   "author": "Abel Wang",
   "helpMarkDown": "Replace with markdown to show in help",
@@ -22,16 +22,16 @@
     {
       "name": "dtToken",
       "type": "string",
-      "label": "Dynatrace tenant token",
-      "defaultValue": "",
+      "label": "Dynatrace API Token",
+      "defaultValue": "$(dynatraceApiToken)",
       "required": true,
-      "helpMarkDown": "Token to your Dynatrace tenant"
+      "helpMarkDown": "API token for your Dynatrace Tenant"
     },
     {
       "name": "dtTenantUrl",
       "type": "string",
       "label": "Dynatrace tenant URL",
-      "defaultValue": "",
+      "defaultValue": "$(dynatraceTenantUrl)",
       "required": true,
       "helpMarkDown": "URL to your Dynatrace tenant"
     },
@@ -55,7 +55,7 @@
       "name": "tagName",
       "type": "string",
       "label": "Tag Name",
-      "defaultValue": "DeploymentGroup",
+      "defaultValue": "DEPLOYMENT_GROUP_NAME",
       "required": true,
       "helpMarkDown": "The tag name"
     },
@@ -65,7 +65,7 @@
       "label": "Tag Value",
       "defaultValue": "$(Release.EnvironmentName)",
       "required": true,
-      "helpMarkDown": "The tag value. This should be name of the environment."
+      "helpMarkDown": "The tag value."
     },
     {
       "name": "deploymentName",
