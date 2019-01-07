@@ -1,7 +1,8 @@
 var path = require('path');
-var tl = require('vso-task-lib');
+var tl = require('azure-pipelines-task-lib/task');
 var request = require('request');
 
+// show the task version information
 var echo = new tl.ToolRunner(tl.which('echo', true));
 
 // getting all parameter variables
@@ -18,7 +19,8 @@ var ciLink = tl.getInput('ciLink', true);
 var jenkinsUrl = tl.getInput('jenkinsUrl', true);
 var buildUrl = tl.getInput('buildUrl', true);
 var gitCommit = tl.getInput('gitCommit', true);
-echo.arg("retrieved all parameters..." + "\n");
+
+console.info("Retrieved all parameters.");
 
 // creating message payload
 var messagePayload = {
@@ -53,7 +55,7 @@ var messagePayload = {
 };
 var messagePayloadString = JSON.stringify(messagePayload);
 
-echo.arg("created message payload..." + "\n");
+console.info("Created message payload.");
 
 // creating dynatrace post deployment event
 var deploymentEventUrl = dtUrl + "/api/v1/events"
@@ -66,21 +68,31 @@ var options = {
     body: messagePayloadString
 }
 
-echo.arg("sending deployment request event to dynatrace..." + "\n");
-request.post(options, function(error, response, body) {
-    echo.arg("returned from post..." + "\n");
-    echo.arg("response code: " + response.statusCode + "\n");
-    echo.arg("returned: " + response + "\n");
-    echo.arg("Error: " + error + "\n");
-});
-echo.arg("done sending deployment request event to dyntrace..." + "\n")
+function callback(error, response, body) {
+    console.info("returned from request.");
+    console.info("response code: " + response.statusCode);
+    if (error) {
+        console.info("Got Error statusCode: " + error.statusCode);
+        console.info("Got Error message: " + error.message);
+    }
+    else {
+        console.info("Returned body: " + response.body);
+    }
+};
 
-echo.exec({ failOnStdErr: false})
-.then(function(code) {
-    tl.exit(code);
+console.info("Sending deployment request event to Dynatrace...");
+console.info("deploymentEventUrl: " + deploymentEventUrl);
+console.info("dtToken: " + dtToken);
+console.info("messagePayloadString: " + messagePayloadString);
+request.post(options, callback);
+console.info("Done sending deployment request event to dyntrace.");
+
+echo.exec({ failOnStdErr: false })
+.then(function (code) {
+    console.info("TaskResult: Succeeded");
+    tl.setResult(tl.TaskResult.Succeeded, code);
 })
 .fail(function(err) {
-    console.error(err.message);
-    tl.debug('taskRunner fail');
-    tl.exit(1);
+    console.error("TaskResult: Error:" + err.message);
+    tl.setResult(tl.TaskResult.Failed, err.message);
 })

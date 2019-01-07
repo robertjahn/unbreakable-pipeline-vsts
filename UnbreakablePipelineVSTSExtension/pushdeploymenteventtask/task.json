@@ -1,10 +1,10 @@
 {
-  "id": "ba26bf93-f441-4451-b6cb-f77c4e589f87",
+  "id": "429c2894-dc72-4eed-b8ad-69c197e9c8fc",
   "name": "DynatracePushDeploymentEvent",
-  "friendlyName": "1.1.11 Dynatrace Push Deployment Event",
+  "friendlyName": "1.1.25 Dynatrace Push Deployment Event",
   "description": "This build and release task sends a deployment event to Dynatrace",
   "author": "Abel Wang",
-  "helpMarkDown": "Replace with markdown to show in help",
+  "helpMarkDown": "",
   "category": "Utility",
   "visibility": [
     "Build",
@@ -12,11 +12,11 @@
   ],
   "demands": [],
   "version": {
-    "Major": "0",
+    "Major": "1",
     "Minor": "1",
-    "Patch": "44"
+    "Patch": "25"
   },
-  "minimumAgentVersion": "1.95.0",
+  "minimumAgentVersion": "2.122.1",
   "instanceNameFormat": "Dynatrace Push Deployment",
   "inputs": [
     {
@@ -47,7 +47,7 @@
       "name": "tagContext",
       "type": "string",
       "label": "Tag Context",
-      "defaultValue": "CONTEXTLESS",
+      "defaultValue": "ENVIRONMENT",
       "required": true,
       "helpMarkDown": "The tag context"
     },

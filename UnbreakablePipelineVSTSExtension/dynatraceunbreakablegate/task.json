@@ -1,10 +1,10 @@
 {
-  "id": "3042a44f-74b3-4217-afe4-8d7cd02c3644",
+  "id": "d34b9fb1-f1c7-4713-a0d6-e3f8d694f2f8",
   "name": "dynatraceunbreakablegate",
-  "friendlyName": "1.1.11 Dynatrace Unbreakable Release Gate",
+  "friendlyName": "1.1.25 Dynatrace Unbreakable Release Gate",
   "description": "Uses Dynatrace monitoring to determine if gate should pass or fail.",
   "author": "Abel Wang",
-  "helpMarkDown": "Replace with markdown to show in help",
+  "helpMarkDown": "",
   "category": "Utility",
   "visibility": [
     "Build",
@@ -15,9 +15,9 @@
   ],
   "demands": [],
   "version": {
-    "Major": "0",
+    "Major": "1",
     "Minor": "1",
-    "Patch": "4"
+    "Patch": "25"
   },
   "instanceNameFormat": "Dynatrace Unbreakable Pipeline Release Gate $(message)",
   "inputs": [

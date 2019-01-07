@@ -1,6 +1,7 @@
 {
   "name": "dynatraceunbreakablegate",
   "version": "1.0.0",
+  "private": true,
   "description": "This release gate uses Dynatrace and monspec files to determine if a VSTS release gate should pass or fail",
   "main": "sample.js",
   "scripts": {
