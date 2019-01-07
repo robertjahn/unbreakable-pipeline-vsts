@@ -15,9 +15,31 @@ The release gate uses an [Azure function](https://azure.microsoft.com/en-us/serv
 
 The release gate also uses a proxy which consists of a VM with python installed and the Dynatrace CLI. The proxy code uses the Dynatrace CLI to pull monspec info from Dynatrace.
 
-The code for the proxy is [here](https://github.com/dynatrace-innovationlab/unbreakable-pipeline-vsts/tree/master/UnbreakablePipelineProxy).
+The code for the proxy is [here](https://github.com/robertjahn/dtcli-webproxy).
 
 Need to make this into a container. Would be super cool to have this deployed in [Azure Container Instance](https://azure.microsoft.com/en-us/services/container-instances/) and have the gate launch this.
+
+## Extention Inputs
+
+The extension parameters will default to builtin DevOps pipeline variables or custom variables.  You don't need to do anything to use the builtin ones, but you need to define variables and values or override the defaults for the custom ones.
+
+Here are the custom variables to use.
+* unbreakableGateFunctionUrl = <YOUR URL> - e.g. https://demodynatraceunbreakablepipeline.azurewebsites.net/api/ProcessUnbreakableGate
+* unbreakableGateFunctionKey = <YOUR FUNCTION TOKEN>
+* monspecUrl = e.g. https://rjahndemofunctionapp.blob.core.windows.net/monspec/smplmonspec.json
+* pipelineInfoUrl = e.g. https://rjahndemofunctionapp.blob.core.windows.net/monspec/smplpipelineinfo.json
+* dynatraceTennantUrl = <YOUR TENANT> e.g. https://<YOUR TENTANT>.live.dynatrace.com
+* dynatraceApiToken = <YOUR TOKEN>
+* dynatraceProxyUrl – there is not path at the end now… just server & port e.g. http://13.68.195.172:5000
+* serviceToCompare = e.g. SampleJSonService/StagingToProduction
+* compareWindow = e.g. 5 - or number of minutes value
+* compareShift = e.g. 0 - or number of minutes value
+
+Here is a screen shot of a variable group.  
+![](variables.png)
+
+The group can be linked to the pipeline for reuse and easier maintenance.
+![](variables_link.png)
 
 ## Dynatrace Unbreakable Pipeline Release Gate
 Installing the extension adds the following 'Dynatrace Unbreakable Pipeline Release Gate'.
@@ -25,7 +47,7 @@ Installing the extension adds the following 'Dynatrace Unbreakable Pipeline Rele
 ![](gate.png)
 
 ### Input parameters
-The gate requires the following 9 inputs:
+The gate requires the following inputs:
 
 - Unbreakable Gate Function Url: The url to the unbreakable gate Azure function
 - Unbreakable Gate Function Key: The default key to the unbreakable gate azure function
@@ -35,9 +57,11 @@ The gate requires the following 9 inputs:
 - Dynatrace Token: Token to your dynatrace tenant.
 - Dynatrace Proxy Url: Url to the Dynatrace proxy.
 - Service To Compare: The service to compare.
-- Compare Window: The windo of time in minutes to compare.
+- Compare Type: Valid values are pullcompare or pull
+- Compare Window: The window of time in minutes to compare.
+- Compare Time Shift: Used for comparetype=pull only. The number of minutes to shift relative to now.
 
-The gate also requres the following 8 VSTS parameters that are defaulted with the correct value.
+The gate also requres the following VSTS parameters that are defaulted with the correct value using references to builtin DevOps pipeline variables.
 
 - VSTS Plan Url
 - VSTS Project Id
@@ -64,6 +88,8 @@ Sending a deployment event to dynatrace requires the following parameters
 - Tag Context: The context used in the tag
 - Tag Name: The name of the tag
 - Tag Value: The value of the tag. For this example, the tag value will be the name of the environment.
+
+The gate also requres the following VSTS parameters that are defaulted with the correct value using references to builtin DevOps pipeline variables.
 - Deployment Name: The release definition name
 - Deployment Version: The release ID
 - Deployment Project: The team project name
