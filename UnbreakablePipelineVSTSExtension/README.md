@@ -113,12 +113,12 @@ The gate also requres the following VSTS parameters that are defaulted with the 
 ### Development flow
 1. Within the two task folders ```dynatraceunbreakablegate``` and ```pushdeploymenteventtask```, run ```npm install``` which will make the ```node_modules```folder.  This folder is in the ```.gitignore``` file as to not check in all these files.
 1. If you are making a new extension then you have to make name and task GUIDs unique.  This is a one-time task.
-   * edit the ```name``` property in ``vss-extension.json``` to a unique name
+   * edit the ```name``` property in ```vss-extension.json``` to a unique name
    * in both ```task.json``` files replace GUID with one from [GUID generator](https://www.guidgen.com/)
 1. Make adjustments to project
 1. Update the patch or minor version.  NOTE: If you adjust the major version, this number it will be added to the dropdown choice when you add the task
-   * edit the ```version``` property in ``vss-extension.json```.  I also add the ```name``` prefix with the same version number as way to see the version in DevOps
-   * edit the ```version``` property in both ```task.json``` files.  I also add the ```friendlyName``` prefix with the same version number as way to see the version in DevOps
+   * edit the ```version``` property in ```vss-extension.json```.  I also add to the ```name``` prefix with the same version number as way to see the version in DevOps
+   * edit the ```version``` property in both ```task.json``` files.  I also add to the ```friendlyName``` prefix with the same version number as way to see the version in DevOps
 
 ### Publication flow
 1. From the project root folder, run the ```build_extension.bat``` to make a new vsix file.  If not on Windows, you can just use the command in this file.
