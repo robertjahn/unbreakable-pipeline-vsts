@@ -27,7 +27,6 @@ namespace GateTest.Behaviors
         [TestMethod]
         public async Task Set_Up_Assemblies_For_Json_Parsing()
         {
-            /*
             using (ShimsContext.Create())
             {
                 #region Arrange
@@ -68,9 +67,11 @@ namespace GateTest.Behaviors
                 };
 
                 // Mock Execute Object to do nothing
-                ShimExecuteObject.AllInstances.Execute = (self) =>
-                {
-                };
+                //ShimExecuteObject.AllInstances.Execute = (self) =>
+                //{
+                //};
+                ShimExecuteObject.AllInstances.Compare = (self) => "";
+
                 #endregion
 
                 #region Act
@@ -84,13 +85,11 @@ namespace GateTest.Behaviors
                 Assert.IsTrue(addedAttributeSubjectDescriptor);
                 #endregion
             }
-            */
         }
 
         [TestMethod]
         public async Task Log_Trigger_Function_Processed()
         {
-            /*
             using (ShimsContext.Create())
             {
                 #region Arrange
@@ -120,9 +119,10 @@ namespace GateTest.Behaviors
                 };
 
                 // Mock Execute Object to do nothing
-                ShimExecuteObject.AllInstances.Execute = (self) =>
-                {
-                };
+                //ShimExecuteObject.AllInstances.Execute = (self) =>
+                //{
+                //};
+                ShimExecuteObject.AllInstances.Compare = (self) => "";
                 #endregion
 
                 #region Act
@@ -135,13 +135,11 @@ namespace GateTest.Behaviors
                 Assert.AreEqual("DynatraceUnbreakableGateFunction: Start", logMessageList[0]);
                 #endregion
             }
-            */
         }
 
         [TestMethod]
         public async Task Parse_Post_Body_To_ExecuteObject()
         {
-            /*
             using (ShimsContext.Create())
             {
                 #region Arrange
@@ -171,9 +169,10 @@ namespace GateTest.Behaviors
                 };
 
                 // Mock Execute Object Execute() to do nothing
-                ShimExecuteObject.AllInstances.Execute = (self) =>
-                {
-                };
+                //ShimExecuteObject.AllInstances.Execute = (self) =>
+                //{
+                //};
+                ShimExecuteObject.AllInstances.Compare = (self) => "";
 
                 // mock execute objectconstructor to get all the values that were parsed from request body
                 var theHubName = string.Empty;
@@ -260,7 +259,6 @@ namespace GateTest.Behaviors
                 Assert.AreEqual("TheServiceToCompare", theServiceToCompare, "service to compare was parsed incorrectly");
                 #endregion
             }
-            */
         }
 
         [TestMethod]
@@ -325,7 +323,6 @@ namespace GateTest.Behaviors
         [TestMethod]
         public async Task Returns_Ok_Message_Response()
         {
-            /*
             using (ShimsContext.Create())
             {
                 #region Arrange
@@ -356,8 +353,6 @@ namespace GateTest.Behaviors
                     theReturnType = returnType;
                     return new HttpResponseMessage();
                 };
-                
-                
 
                 // mock HttpContent to do nothing
                 ShimHttpContent.AllInstances.ReadAsStringAsync = (self) =>
@@ -366,9 +361,10 @@ namespace GateTest.Behaviors
                 };
 
                 // Mock Execute Object to do nothing
-                ShimExecuteObject.AllInstances.Execute = (self) =>
-                {
-                };
+                //ShimExecuteObject.AllInstances.Execute = (self) =>
+                //{
+                //};
+                ShimExecuteObject.AllInstances.Compare = (self) => "";
                 #endregion
 
                 #region Act
@@ -381,11 +377,10 @@ namespace GateTest.Behaviors
 
                 #region Assert
                 Assert.AreEqual(HttpStatusCode.OK, theCode, "Status code is wrong");
-                Assert.AreEqual("Started Async processing of monspec...", theMsg, "response message is wrong");
+                Assert.AreEqual("{\"status\":\"success\",\"comment\":\"\"}", theMsg, "response message is wrong");
                 Assert.AreEqual("application/json", theReturnType, "returnType is wrong");
                 #endregion
             }
-            */
         }
     }
 }
