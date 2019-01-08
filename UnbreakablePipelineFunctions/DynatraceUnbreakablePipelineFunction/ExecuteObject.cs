@@ -63,6 +63,7 @@ namespace DynatraceUnbreakablePipelineFunction
             this.compareShift = compareShift;
             this.compareType = compareType;
 
+            // TODO - remove all VSTS variables and arguments related to async if not going to use this approach
             this.TaskInstanceId = taskInstanceId;
             this.JobId = jobId;
             this.PlanId = planId;
@@ -175,7 +176,49 @@ namespace DynatraceUnbreakablePipelineFunction
             return pullCompareResponse;
         }
 
-        // long running method called by seperate thread
+        // This method is used for Syncronous processing
+        public String Compare()
+        {
+            var compareReturnString = "";
+       
+            var logMessage = "ExecuteObject.Compare(): Start";
+            this.Log.Info(logMessage);
+
+            try
+            {
+                // query dynatrace with monspec. this is a long running command
+                logMessage = "ExecuteObject.Compare(): querying Dynatrace with monspec";
+                this.Log.Info(logMessage);
+                String monSpecResponse = this.MonspecPullRequestReturnString();
+                logMessage = "ExecuteObject.Compare(): finished Dynatrace monspec query";
+                this.Log.Info(logMessage);
+
+                var pullCompareResponseObj = JsonConvert.DeserializeObject<PullCompareResponse>(monSpecResponse);
+                logMessage = "ExecuteObject.Compare(): finished deserializing monspec response";
+                this.Log.Info(logMessage);
+
+                // check response and either pass or fail gate
+                if (pullCompareResponseObj.totalViolations == 0)
+                {
+                    this.Log.Info("ExecuteObject.Compare(): There are zero violations, sending succeed to gate");
+                }
+                else
+                {
+                    compareReturnString = "There are: " + pullCompareResponseObj.totalViolations + " violation(s), sending fail to gate";
+                    this.Log.Error("ExecuteObject.Compare(): " + compareReturnString);
+                }
+            }
+            catch (Exception e)
+            {
+                compareReturnString = "Exception: " + e.Message + ": " + e.StackTrace;
+                this.Log.Error("ExecuteObject.Compare(): " + compareReturnString);
+            }
+
+            return compareReturnString;
+        }
+
+        // TODO - remove if not going to use this approach
+        // This method is used for ASyncronous processing
         public void Execute()
         {
             Boolean success = false;

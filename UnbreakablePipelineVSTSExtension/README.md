@@ -61,17 +61,6 @@ The gate requires the following inputs:
 - Compare Window: The window of time in minutes to compare.
 - Compare Time Shift: Used for comparetype=pull only. The number of minutes to shift relative to now.
 
-The gate also requres the following VSTS parameters that are defaulted with the correct value using references to builtin DevOps pipeline variables.
-
-- VSTS Plan Url
-- VSTS Project Id
-- Hub Name
-- Plan Id
-- Job Id,
-- Timeline Id,
-- Task Instance Id,
-- Authentication Token
-
 ## Dynatrace Push Deployment Event Task
 
 This extension also comes with a build and release task which sends a Deployment Event to your dynatrace tenant. This task should be called after deploying to an environment. This deployment event is used by Dynatrace in the self healing use case.

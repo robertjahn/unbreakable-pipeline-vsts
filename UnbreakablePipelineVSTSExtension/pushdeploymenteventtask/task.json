@@ -1,7 +1,7 @@
 {
   "id": "429c2894-dc72-4eed-b8ad-69c197e9c8fc",
   "name": "DynatracePushDeploymentEvent",
-  "friendlyName": "1.1.25 Dynatrace Push Deployment Event",
+  "friendlyName": "1.1.27 Dynatrace Push Deployment Event",
   "description": "This build and release task sends a deployment event to Dynatrace",
   "author": "Abel Wang",
   "helpMarkDown": "",
@@ -14,7 +14,7 @@
   "version": {
     "Major": "1",
     "Minor": "1",
-    "Patch": "25"
+    "Patch": "27"
   },
   "minimumAgentVersion": "2.122.1",
   "instanceNameFormat": "Dynatrace Push Deployment",

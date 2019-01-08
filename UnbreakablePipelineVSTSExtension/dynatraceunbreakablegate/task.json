@@ -1,7 +1,7 @@
 {
   "id": "d34b9fb1-f1c7-4713-a0d6-e3f8d694f2f8",
   "name": "dynatraceunbreakablegate",
-  "friendlyName": "1.1.25 Dynatrace Unbreakable Release Gate",
+  "friendlyName": "1.1.27 Dynatrace Unbreakable Release Gate",
   "description": "Uses Dynatrace monitoring to determine if gate should pass or fail.",
   "author": "Abel Wang",
   "helpMarkDown": "",
@@ -17,7 +17,7 @@
   "version": {
     "Major": "1",
     "Minor": "1",
-    "Patch": "25"
+    "Patch": "27"
   },
   "instanceNameFormat": "Dynatrace Unbreakable Pipeline Release Gate $(message)",
   "inputs": [
@@ -111,70 +111,6 @@
       "label": "Compare Time Shift",
       "defaultValue": "$(compareShift)",
       "helpMarkDown": "Used for comparetype=pull only. The number of minutes to shift relative to now."
-    },
-    {
-      "name": "PlanUrl",
-      "type": "string",
-      "label": "VSTS Plan Url",
-      "defaultValue": "$(system.CollectionUri)",
-      "required": true,
-      "helpMarkDown": "Url the the VSTS collection plan (e.g. https://vsrm.dev.azure.com/robjahn/)."
-    },
-    {
-      "name": "ProjectId",
-      "type": "string",
-      "label": "VSTS Project Id",
-      "defaultValue": "$(system.TeamProjectId)",
-      "required": true,
-      "helpMarkDown": "Id to the VSTS Team Project."
-    },
-    {
-      "name": "HubName",
-      "type": "string",
-      "label": "Hub Name",
-      "defaultValue": "$(system.HostType)",
-      "required": true,
-      "helpMarkDown": "Where the task is being run. Either Hub or Server."
-    },
-    {
-      "name": "PlanId",
-      "type": "string",
-      "label": "Plan Id",
-      "defaultValue": "$(system.PlanId)",
-      "required": true,
-      "helpMarkDown": "VSTS Plan Id."
-    },
-    {
-      "name": "JobId",
-      "type": "string",
-      "label": "Job Id",
-      "defaultValue": "$(system.JobId)",
-      "required": true,
-      "helpMarkDown": "VSTS Job Id."
-    },
-    {
-      "name": "TimelineId",
-      "type": "string",
-      "label": "Timeline Id",
-      "defaultValue": "$(system.TimelineId)",
-      "required": true,
-      "helpMarkDown": "VSTS Timeline Id."
-    },
-    {
-      "name": "TaskInstanceId",
-      "type": "string",
-      "label": "Task Instance Id",
-      "defaultValue": "$(system.TaskInstanceId)",
-      "required": true,
-      "helpMarkDown": "Task Instance Id."
-    },
-    {
-      "name": "AuthToken",
-      "type": "string",
-      "label": "Authentication Token",
-      "defaultValue": "$(system.AccessToken)",
-      "required": true,
-      "helpMarkDown": "VSTS authentication token."
     }
   ],
   "execution": {
@@ -183,10 +119,9 @@
         "endpointId": "",
         "endpointUrl": "$(unbreakableGateFunctionUrl)?code=$(unbreakableGateFunctionKey)",
         "method": "POST",
-        "body": "{ \"Content-Type\":\"application/json\", \"PlanUrl\": \"$(PlanUrl)\", \"ProjectId\": \"$(ProjectId)\", \"HubName\": \"$(HubName)\", \"PlanId\": \"$(PlanId)\", \"JobId\": \"$(JobId)\", \"TimelineId\": \"$(TimelineId)\", \"TaskInstanceId\": \"$(TaskInstanceId)\", \"AuthToken\": \"$(AuthToken)\", \"monspecUrl\": \"$(monspecUrl)\", \"pipelineInfoUrl\": \"$(pipelineInfoUrl)\", \"dynatraceTennantUrl\": \"$(dynatraceTenantUrl)\", \"dynatraceToken\": \"$(dynatraceApiToken)\", \"proxyUrl\": \"$(dynatraceProxyUrl)\", \"serviceToCompare\":\"$(serviceToCompare)\", \"compareWindow\": \"$(compareWindow)\", \"compareShift\": \"$(compareShift)\", \"compareType\": \"$(compareType)\" }",
+        "body": "{ \"Content-Type\":\"application/json\", \"monspecUrl\": \"$(monspecUrl)\", \"pipelineInfoUrl\": \"$(pipelineInfoUrl)\", \"dynatraceTennantUrl\": \"$(dynatraceTenantUrl)\", \"dynatraceToken\": \"$(dynatraceApiToken)\", \"proxyUrl\": \"$(dynatraceProxyUrl)\", \"serviceToCompare\":\"$(serviceToCompare)\", \"compareWindow\": \"$(compareWindow)\", \"compareShift\": \"$(compareShift)\", \"compareType\": \"$(compareType)\" }",
         "headers": "{ \"Content-Type\":\"application/json\"  }",
-        "WaitForCompletion": true,
-        "Expression": ""
+        "Expression": "eq(root['status'], 'success')"
       }
     }
   }

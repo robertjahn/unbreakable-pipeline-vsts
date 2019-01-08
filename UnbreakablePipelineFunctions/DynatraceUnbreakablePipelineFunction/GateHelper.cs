@@ -8,11 +8,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
 namespace DynatraceUnbreakablePipelineFunction
 {
-
+    // TODO - remove this class if not going to use this approach
     public class GateHelper
     {
         public enum Result { Succeeded, Failed }

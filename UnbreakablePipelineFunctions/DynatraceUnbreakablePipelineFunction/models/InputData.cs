@@ -9,28 +9,28 @@ namespace DynatraceUnbreakablePipelineFunction
 {
     public class InputData
     {
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string planUrl { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string projectId { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string hubName { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string planId { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string jobId { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string timelineId { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string taskInstanceId { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
         public string authToken { get; set; }
 
         [JsonProperty(Required = Required.Always)]

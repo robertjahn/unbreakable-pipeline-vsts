@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -18,7 +19,12 @@ namespace DynatraceUnbreakablePipelineFunction.Proxies
 
         public static HttpResponseMessage CreateResponse(HttpRequestMessage req, HttpStatusCode code, string msg, string responseType)
         {
-            return req.CreateResponse(code, msg, responseType);
+            return new HttpResponseMessage(code)
+            {
+                Content = new StringContent(msg, Encoding.UTF8, "application/json")
+            };
+
+            //return req.CreateResponse(code, msg, responseType);
         }
     }
 }
