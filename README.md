@@ -1,7 +1,25 @@
+NOTICE:
+ 
+The components in this demo have some known issues and limitations listed below.  As this is a community project please be aware that there is not Dynatrace product support for this and please read the disclaimers below about the state and purpose of this code.
+* Extensions
+  * Uses an out of date DevOps node module and can result in “null” response when run on custom build agents
+  * Limited to a single Dynatrace Tag and specific version the Dynatrace API
+  * Limited debug messages
+* Function Apps
+  * Built on function app 1.x framework.  2.x is the recommended version now
+  * Requires visual studio enterprise to run the mock tests as to have the “Fakes” module
+  * Quality Gate “callback” feature is broken
+  * Limited debug messages
+  * Selfhealing function –This function has assumptions for what is put into the deployment event, Dynatrace and DevOps API versions, and variables passed from the DevOps Pipeline
+* Web Proxy app
+  * No README for building and deploying the application to a VM
+
+
 # Dynatrace Unbreakable Pipeline for VSTS
 
 Original Developer: Abel Wang (Microsoft)
-Maintainer: Dynatrace Innovation Lab (Main contact: @grabnerandi)
+Maintainer: Maintainer: None.  
+Point of contact for suggestions/questions/ways to improve: Dynatrace Innovation Lab (Main contact Rob Jahn - rob.jahn@dynatrace.com)
 
 Special thanks goes to Abel Wang and Donovan Brown who started implementing this plugin. More details on Abels blog about [The Dynatrace Unbreakable Pipeline in VSTS and Azure](https://abelsquidhead.com/index.php/2018/08/03/the-dynatrace-unbreakable-pipeline-in-vsts-and-azure-bam/)
 
